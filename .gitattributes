@@ -1,0 +1,38 @@
+* text=auto
+
+# Language detection override for GitHub Linguist
+* linguist-vendored
+*.py linguist-vendored=false
+docs/* linguist-documentation
+
+# Clean/smudge filters
+*.psd filter=lfs diff=lfs merge=lfs
+
+# Line ending normalization
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Treat as binary
+*.png binary
+*.jpg binary
+*.svg binary
+
+# Custom diff driver
+*.json diff=json
+*.md diff=markdown
+
+# Merge strategy
+package-lock.json merge=ours
+uv.lock merge=ours
+
+# 텍스트로 간주하고 LF로 변환
+*.properties text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.xml text eol=lf
+*.csv text eol=lf
+
+# Ensure HTML and CSS files use LF for consistency
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
