@@ -273,14 +273,14 @@ run-trajectory-batch
 
 1차 결정:
 
-- [ ] 기준 좌표계를 `EPSG:4326`으로 할지, dashboard map SDK 내부 투영 좌표로 둘지 결정
+- [x] 기준 좌표계를 **`EPSG:4326`**으로 고정한다.
 - [ ] camera별 `world_points -> geo` 변환 규칙을 어디서 관리할지 결정
-- [ ] point 단위 heatmap으로 갈지, grid cell / polygon 단위 heatmap으로 갈지 결정
+- [x] point 단위 heatmap으로 갈지, grid cell / polygon 단위 heatmap으로 갈지 결정
 
 권장:
 
-- [x] 저장은 `grid cell` 중심으로 단순화한다.
-- [x] 최종 조회 좌표계는 `EPSG:4326` 또는 그에 준하는 지도 좌표를 쓴다.
+- [x] 저장은 `grid cell` 중심으로 단순화한다. (집계 효율 및 데이터 용량 고려)
+- [x] 최종 조회 좌표계는 **`EPSG:4326`**을 기본으로 사용한다.
 - [x] raw point 전체를 dashboard로 직접 내리지 않고 batch에서 cell 집계를 만든다.
 
 부록:
@@ -296,6 +296,7 @@ run-trajectory-batch
 - [ ] `PreparedTracklet`
 - [ ] `StitchedTrajectory`
 - [ ] `PresenceEpisode`
+- [ ] **`LocalConfig`** (Stay Zone survival thresholds 등 포함)
 
 ### 5.2 Revised Global Input Layer
 
@@ -311,6 +312,7 @@ run-trajectory-batch
 - [ ] `BaseGlobalUnitMember`
 - [ ] `GlobalUnit`
 - [ ] `GlobalPresenceEpisode`
+- [ ] **`GlobalConfig`** (max_edge_cost, unmatched_cost 등 파라미터 버전 관리)
 
 ### 5.4 Metrics Layer
 
@@ -384,6 +386,8 @@ run-trajectory-batch
 - [ ] `visible_end_time`
 - [ ] `visible_episode_count`
 - [ ] `visible_camera_count`
+- [ ] **`config_version`** (튜닝 파라미터 세트 식별자)
+- [ ] **`repeated_camera_validation`** (동일 카메라 재진입 유지 로직 적용 여부/결과 플래그)
 
 파생/검증 컬럼:
 
@@ -507,7 +511,7 @@ run-trajectory-batch
 - [ ] `visible_unique_units`
 - [ ] `total_visible_dwell_s`
 - [ ] `heatmap_value`
-- [ ] `spatial_ref`
+- [ ] **`spatial_ref`** (기본값: 'EPSG:4326')
 
 용도:
 
@@ -517,7 +521,7 @@ run-trajectory-batch
 비고:
 
 - [x] 1차는 point cloud 전체 저장보다 `cell_id` 기반 집계가 더 안전하다.
-- [x] `spatial_ref`는 `EPSG:4326` 같은 좌표계 식별자를 저장한다.
+- [x] `spatial_ref`는 **`EPSG:4326`** 고정을 원칙으로 한다.
 
 ### 6.8 `trajectory_spatial_heatmap_dashboard_v`
 
@@ -913,7 +917,9 @@ view 또는 읽기 전용 모델:
 6. [x] `hourly_metric_summary` 원본 + dashboard용 집계 view + heatmap 계획을 반영한다.
 7. [x] GPS/지도 heatmap을 위한 공간 좌표 변환과 spatial heatmap 계획을 추가한다.
 8. [x] `ktooh-dashboard-poc` 최소 API/모델/Repository 변경 목록을 추가한다.
-�을 추가한다.
-8. [x] `ktooh-dashboard-poc` 최소 API/모델/Repository 변경 목록을 추가한다.
-� API/모델/Repository 변경 목록을 추가한다.
- 목록을 추가한다.
+
+---
+**References:**
+- State-space Modeling for Pedestrian Tracking
+- Graph-based Data Association in Multiple-Object Tracking
+- Topology-aware Multi-camera Association Strategies
