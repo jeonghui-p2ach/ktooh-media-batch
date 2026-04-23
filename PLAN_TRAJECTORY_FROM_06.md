@@ -865,17 +865,17 @@ view 또는 읽기 전용 모델:
 
 ### 9.9 최소 Migration / 성능 작업
 
-- [ ] trajectory 테이블 생성 migration
-- [ ] trajectory view 생성 migration
+- [ ] **단일 Alembic Migration 버전** 생성 (테이블 및 뷰 통합)
 - [ ] `media_id`, `camera_code`, `campaign_id`, `creative_id`, 시간 컬럼 index 추가
 - [ ] spatial heatmap용 geometry 또는 cell index 전략 추가
+- [ ] **배치 시점의 Spatial Cell 사전 집계(Materialized View 등)** 검토
 
 권장 index:
 
 - [ ] `(media_id, target_date, hour_start)`
 - [ ] `(camera_code, target_date, hour_start)`
 - [ ] `(campaign_id, creative_id, hour_start)`
-- [ ] spatial 조회용 `cell_id` 또는 geometry index
+- [ ] spatial 조회용 `cell_id` 또는 geometry index (PostGIS GIST index 등)
 
 ### 9.10 최소 구현 순서
 
@@ -913,3 +913,7 @@ view 또는 읽기 전용 모델:
 6. [x] `hourly_metric_summary` 원본 + dashboard용 집계 view + heatmap 계획을 반영한다.
 7. [x] GPS/지도 heatmap을 위한 공간 좌표 변환과 spatial heatmap 계획을 추가한다.
 8. [x] `ktooh-dashboard-poc` 최소 API/모델/Repository 변경 목록을 추가한다.
+�을 추가한다.
+8. [x] `ktooh-dashboard-poc` 최소 API/모델/Repository 변경 목록을 추가한다.
+� API/모델/Repository 변경 목록을 추가한다.
+ 목록을 추가한다.
