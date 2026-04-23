@@ -17,9 +17,30 @@
 - trajectory ETL과 이 프로젝트는 분리한다.
 - 배치 이력 테이블은 두지 않고, 필요 시 삭제 후 다시 생성하는 운영 방식을 쓴다.
 
+## Measurement / Trajectory 경계
+
+이 저장소의 기본 범위는 measurement batch다.
+
+- measurement batch: `demographic.jsonl`, `floating.jsonl` -> `audience_event_fact`, `traffic`, aggregate
+- trajectory batch: `presence_episode`, `global_unit`, `route_family`, spatial heatmap
+
+권장 운영 방식:
+
+- 같은 저장소를 유지하더라도 패키지는 `measurement`와 `trajectory`로 분리
+- 더 독립적인 배포가 필요하면 `ktooh-trajectory-batch` 별도 프로젝트로 분리
+
+같은 저장소를 유지할 때 권장 구조:
+
+```text
+src/
+├── measurement/
+└── trajectory/
+```
+
 ## 문서
 
 - [PLAN.md](PLAN.md)
+- [PLAN_TRAJECTORY_FROM_06.md](PLAN_TRAJECTORY_FROM_06.md)
 
 ## 초기 구조
 

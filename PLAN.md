@@ -23,28 +23,28 @@
 
 ### 1.1 목표
 
-- [ ] `media_id`, `target_date`를 받아 `project-pooh-kt` 계열 raw jsonl을 수집할 수 있어야 한다.
-- [ ] `demographic` source는 `audience_event_fact`와 aggregate 테이블에서 바로 조회 가능한 fact row를 만들어야 한다.
-- [ ] `floating` source는 1차에서 차량 `traffic` 적재를 끝내야 한다.
-- [ ] pedestrian audience pattern은 선택 범위로 두되, 필요하면 2차로 이월할 수 있어야 한다.
-- [ ] `ktooh-dashboard-poc`의 `media`, `cameras`, `media_campaign_map`, `campaign_schedules`, `creatives`를 사용해 귀속을 해소해야 한다.
-- [ ] `source_batch_id + raw_ref` 기준으로 안전하게 재생성/재처리가 가능해야 한다.
+- [x] `media_id`, `target_date`를 받아 `project-pooh-kt` 계열 raw jsonl을 수집할 수 있어야 한다.
+- [x] `demographic` source는 `audience_event_fact`와 aggregate 테이블에서 바로 조회 가능한 fact row를 만들어야 한다.
+- [x] `floating` source는 1차에서 차량 `traffic` 적재를 끝내야 한다.
+- [x] pedestrian audience pattern은 선택 범위로 두되, 필요하면 2차로 이월할 수 있어야 한다.
+- [x] `ktooh-dashboard-poc`의 `media`, `cameras`, `media_campaign_map`, `campaign_schedules`, `creatives`를 사용해 귀속을 해소해야 한다.
+- [x] `source_batch_id + raw_ref` 기준으로 안전하게 재생성/재처리가 가능해야 한다.
 
 ### 1.2 비목표
 
-- [ ] 외부 유동인구 batch를 이 프로젝트로 대체하지 않는다.
-- [ ] trajectory 전체 파이프라인을 이 프로젝트에 섞지 않는다.
-- [ ] raw payload만으로 creative가 항상 확정된다고 가정하지 않는다.
-- [ ] 배치 실행 이력 테이블(`batch_runs`, `batch_run_files`, `batch_quarantine`)을 운영 관리 목적으로 만들지 않는다.
-- [ ] 1차 릴리스에서 운영 UI까지 함께 수정하지 않는다.
+- [x] 외부 유동인구 batch를 이 프로젝트로 대체하지 않는다.
+- [x] trajectory 전체 파이프라인을 이 프로젝트에 섞지 않는다.
+- [x] raw payload만으로 creative가 항상 확정된다고 가정하지 않는다.
+- [x] 배치 실행 이력 테이블(`batch_runs`, `batch_run_files`, `batch_quarantine`)을 운영 관리 목적으로 만들지 않는다.
+- [x] 1차 릴리스에서 운영 UI까지 함께 수정하지 않는다.
 
 ### 1.3 완료 정의
 
-- [ ] `plan`, `run-step`, `run-batch` CLI가 동작한다.
-- [ ] 샘플 demographic/floating jsonl을 실제 parser로 읽을 수 있다.
-- [ ] demographic raw에서 `audience_event_fact` 적재 후 aggregate ETL까지 완료된다.
-- [ ] floating raw에서 `traffic` 적재가 완료된다.
-- [ ] 같은 원천 파일을 다시 처리할 때 삭제 후 재생성 또는 멱등 upsert가 예측 가능하게 동작한다.
+- [x] `plan`, `run-step`, `run-batch` CLI가 동작한다.
+- [x] 샘플 demographic/floating jsonl을 실제 parser로 읽을 수 있다.
+- [x] demographic raw에서 `audience_event_fact` 적재 후 aggregate ETL까지 완료된다.
+- [x] floating raw에서 `traffic` 적재가 완료된다.
+- [x] 같은 원천 파일을 다시 처리할 때 삭제 후 재생성 또는 멱등 upsert가 예측 가능하게 동작한다.
 
 ---
 
@@ -89,7 +89,7 @@
 - [x] 화면 조회: dashboard 조회는 사용자 설정 시간대를 사용한다. 기본 시간대는 `Asia/Seoul`이다.
 - [x] 조회 변환 책임은 dashboard 조회 계층과 UI에 있다.
 - [x] batch는 UTC 저장과 UTC 기준 집계까지만 책임지고, 사용자 시간대별 표시 변환은 하지 않는다.
-- [ ] `ktooh-dashboard-poc` aggregate/query 경로가 이 계약과 모순 없이 동작하는지 함께 점검한다.
+- [x] `ktooh-dashboard-poc` aggregate/query 경로가 이 계약과 모순 없이 동작하는지 함께 점검한다.
 
 ---
 
@@ -106,8 +106,8 @@
 
 ### 3.2 creative 미확정 정책
 
-- [ ] campaign 단일 매칭이면 `creative_id = NULL`로 적재 허용
-- [ ] campaign 복수 매칭이면 reject
+- [x] campaign 단일 매칭이면 `creative_id = NULL`로 적재 허용
+- [x] campaign 복수 매칭이면 reject
 
 권장:
 
@@ -115,8 +115,8 @@
 
 ### 3.3 floating pedestrian pattern 범위
 
-- [ ] 1차 릴리스에 포함
-- [ ] 1차는 traffic만 적재하고 pattern은 2차로 이월
+- [x] 1차 릴리스에 포함 여부를 설정으로 제어한다.
+- [x] 1차는 traffic 우선, pedestrian pattern은 선택적으로 적재한다.
 
 권장:
 
@@ -124,12 +124,12 @@
 
 ### 3.4 fact 추적 컬럼 추가
 
-- [ ] `audience_event_fact`에 `camera_code`, `raw_ref`, `source_schema` 추가
-- [ ] 별도 운영 이력 테이블은 만들지 않음
+- [x] `audience_event_fact`에 `camera_code`, `raw_ref`, `source_schema` 추가
+- [x] 별도 운영 이력 테이블은 만들지 않음
 
 권장:
 
-- [ ] 추적 컬럼 추가 포함
+- [x] 추적 컬럼 추가 포함
 
 ### 3.5 멱등 키 정책
 
@@ -185,14 +185,58 @@ src/
 └── verify.py
 ```
 
-### 4.3 책임 분리
+### 4.3 Measurement / Trajectory 경계
 
-- [ ] parser: raw line -> typed DTO
-- [ ] normalization: typed DTO -> draft row
-- [ ] attribution: media/campaign/creative 귀속 해소
-- [ ] loader: DB insert/upsert 또는 삭제 후 재생성
-- [ ] dashboard_registry: dashboard DB read 경계
-- [ ] verify: 적재 후 수치 검증
+- [x] 현재 `ktooh-media-batch/src`는 measurement batch 전용 패키지다.
+- [x] 이 문서의 구현 범위는 `demographic.jsonl`, `floating.jsonl`에서 `audience_event_fact`, `traffic`, aggregate 적재까지다.
+- [x] `presence_episode`, `global_unit`, `route_family`, spatial heatmap은 이 문서 범위가 아니다.
+- [x] trajectory 관련 계획과 적재 계약은 `PLAN_TRAJECTORY_FROM_06.md`에서 별도로 관리한다.
+
+권장 분리 수준:
+
+- [x] 저장소를 유지하더라도 패키지는 최소 `measurement`와 `trajectory`로 나눈다.
+- [x] 더 안전한 선택은 `ktooh-media-batch`와 `ktooh-trajectory-batch`를 별도 프로젝트로 분리하는 것이다.
+
+같은 저장소를 유지할 때 권장 구조:
+
+```text
+src/
+├── measurement/
+│   ├── main.py
+│   ├── config.py
+│   ├── collector.py
+│   ├── parser_demographic.py
+│   ├── parser_floating.py
+│   ├── normalization_demographic.py
+│   ├── normalization_floating.py
+│   ├── attribution.py
+│   ├── loader_audience.py
+│   ├── loader_traffic.py
+│   └── verify.py
+└── trajectory/
+    ├── preprocess.py
+    ├── local_stage.py
+    ├── global_stage.py
+    ├── metrics_stage.py
+    ├── routes_stage.py
+    ├── storage.py
+    └── verify.py
+```
+
+분리 원칙:
+
+- [x] measurement batch는 raw event 해석과 KPI/aggregate 적재만 책임진다.
+- [x] trajectory batch는 local/global association, route family, heatmap cell 적재만 책임진다.
+- [x] 공통점은 raw 수집 규약, UTC 저장 규약, dashboard lookup 정도로 제한한다.
+
+### 4.4 책임 분리
+
+- [x] parser: raw line -> typed DTO
+- [x] normalization: typed DTO -> draft row
+- [x] attribution: media/campaign/creative 귀속 해소
+- [x] loader: DB insert/upsert 또는 삭제 후 재생성
+- [x] dashboard_registry: dashboard DB read 경계
+- [x] verify: 적재 후 수치 검증
 
 ---
 
@@ -202,15 +246,15 @@ src/
 
 ### 5.1 내부 모델
 
-- [ ] `BatchRequest`
-- [ ] `DashboardBinding`
-- [ ] `CollectedObject`
-- [ ] `DemographicRawRecord`
-- [ ] `FloatingRawRecord`
-- [ ] `AudienceFactDraft`
-- [ ] `TrafficDraft`
-- [ ] `RejectedRow`
-- [ ] `LoadSummary`
+- [x] `BatchRequest`
+- [x] `DashboardBinding`
+- [x] `CollectedObject`
+- [x] `DemographicRawRecord`
+- [x] `FloatingRawRecord`
+- [x] `AudienceFactDraft`
+- [x] `TrafficDraft`
+- [x] `RejectedRow`
+- [x] `LoadSummary`
 
 ### 5.2 `DemographicRawRecord`
 
@@ -252,40 +296,40 @@ src/
 
 ### 5.4 `AudienceFactDraft`
 
-- [ ] `occurred_at`
-- [ ] `occurred_date`
-- [ ] `occurred_hour`
-- [ ] `media_id`
-- [ ] `campaign_id` (`NULL` 허용)
-- [ ] `creative_id` (`NULL` 허용)
-- [ ] `segment_type`
-- [ ] `segment_value`
-- [ ] `threshold_sec`
-- [ ] `floating_population`
-- [ ] `visible_population`
-- [ ] `attentive_population`
-- [ ] `watched_population`
-- [ ] `watch_time_seconds`
-- [ ] `dwell_time_seconds`
-- [ ] `play_count`
-- [ ] `allocation_basis`
-- [ ] `source_type`
-- [ ] `source_batch_id`
-- [ ] `camera_code`
-- [ ] `raw_ref`
-- [ ] `source_schema`
+- [x] `occurred_at`
+- [x] `occurred_date`
+- [x] `occurred_hour`
+- [x] `media_id`
+- [x] `campaign_id` (`NULL` 허용)
+- [x] `creative_id` (`NULL` 허용)
+- [x] `segment_type`
+- [x] `segment_value`
+- [x] `threshold_sec`
+- [x] `floating_population`
+- [x] `visible_population`
+- [x] `attentive_population`
+- [x] `watched_population`
+- [x] `watch_time_seconds`
+- [x] `dwell_time_seconds`
+- [x] `play_count`
+- [x] `allocation_basis`
+- [x] `source_type`
+- [x] `source_batch_id`
+- [x] `camera_code`
+- [x] `raw_ref`
+- [x] `source_schema`
 
 ### 5.5 `TrafficDraft`
 
-- [ ] `media_id`
-- [ ] `campaign_id` (`NULL` 허용)
-- [ ] `ts`
-- [ ] `vehicle_type`
-- [ ] `direction`
-- [ ] `count`
-- [ ] `camera_code`
-- [ ] `raw_ref`
-- [ ] `source_batch_id`
+- [x] `media_id`
+- [x] `campaign_id` (`NULL` 허용)
+- [x] `ts`
+- [x] `vehicle_type`
+- [x] `direction`
+- [x] `count`
+- [x] `camera_code`
+- [x] `raw_ref`
+- [x] `source_batch_id`
 
 ---
 
@@ -295,43 +339,43 @@ src/
 
 생성 규칙:
 
-- [ ] total 세그먼트 row 생성
-- [ ] gender 세그먼트 row 생성
-- [ ] age 세그먼트 row 생성
-- [ ] watch threshold row는 `1`, `3`, `7`초 기준으로 생성
+- [x] total 세그먼트 row 생성
+- [x] gender 세그먼트 row 생성
+- [x] age 세그먼트 row 생성
+- [x] watch threshold row는 `1`, `3`, `7`초 기준으로 생성
 
 metric 규칙:
 
-- [ ] `visible_population = 1`
-- [ ] `attentive_population = 노출 정책에 따른 0/1`
-- [ ] `watched_population = threshold 통과 시 1`
-- [ ] `watch_time_seconds = gaze_duration`
-- [ ] `dwell_time_seconds = stay_duration`
-- [ ] `play_count = 0`
-- [ ] `allocation_basis = camera_demographic`
+- [x] `visible_population = 1`
+- [x] `attentive_population = 노출 정책에 따른 0/1`
+- [x] `watched_population = threshold 통과 시 1`
+- [x] `watch_time_seconds = gaze_duration`
+- [x] `dwell_time_seconds = stay_duration`
+- [x] `play_count = 0`
+- [x] `allocation_basis = camera_demographic`
 
 ### 6.2 floating -> traffic
 
 대상 타입:
 
-- [ ] `Car`
-- [ ] `Bus`
-- [ ] `Truck`
-- [ ] `Motorcycle`
+- [x] `Car`
+- [x] `Bus`
+- [x] `Truck`
+- [x] `Motorcycle`
 
 적재 규칙:
 
-- [ ] `ts = start_time` (UTC)
-- [ ] `count = 1`
-- [ ] `campaign_id = NULL`
+- [x] `ts = start_time` (UTC)
+- [x] `count = 1`
+- [x] `campaign_id = NULL`
 - [ ] `direction`은 canonical 값 집합으로 고정한다.
 
 ### 6.3 floating -> audience pattern
 
-- [ ] 대상 타입은 `Pedestrian`
-- [ ] 1차에서 제외 가능
-- [ ] 포함 시 `dwell_time_seconds = dwell` 중심으로 최소 적재
-- [ ] campaign/creative 귀속은 1차에서 제외 또는 `NULL`
+- [x] 대상 타입은 `Pedestrian`
+- [x] 1차에서 제외 가능
+- [x] 포함 시 `dwell_time_seconds = dwell` 중심으로 최소 적재
+- [x] campaign/creative 귀속은 1차에서 제외 또는 `NULL`
 
 ---
 
@@ -347,27 +391,27 @@ metric 규칙:
 
 ### 7.2 `audience_event_fact` 변경
 
-- [ ] `camera_code VARCHAR(50)` 추가
-- [ ] `raw_ref VARCHAR(255)` 추가
-- [ ] `source_schema VARCHAR(64)` 추가
+- [x] `camera_code VARCHAR(50)` 추가
+- [x] `raw_ref VARCHAR(255)` 추가
+- [x] `source_schema VARCHAR(64)` 추가
 
 인덱스 검토:
 
-- [ ] `ix_aef_camera_occurred`
-- [ ] `ix_aef_raw_ref`
+- [x] `ix_aef_camera_occurred`
+- [x] `ix_aef_raw_ref`
 - [x] unique key 후보: `(source_batch_id, raw_ref, segment_type, segment_value, threshold_sec)`
-- [ ] `source_batch_id` 생성 규칙을 문서와 코드에 같은 방식으로 고정한다.
+- [x] `source_batch_id` 생성 규칙을 문서와 코드에 같은 방식으로 고정한다.
 
 ### 7.3 `traffic` 변경
 
-- [ ] `camera_code VARCHAR(50)` 추가
-- [ ] `source_batch_id VARCHAR(64)` 추가
-- [ ] `raw_ref VARCHAR(255)` 추가
+- [x] `camera_code VARCHAR(50)` 추가
+- [x] `source_batch_id VARCHAR(64)` 추가
+- [x] `raw_ref VARCHAR(255)` 추가
 
 인덱스 검토:
 
-- [ ] `ix_traffic_camera_ts`
-- [ ] `ix_traffic_source_batch`
+- [x] `ix_traffic_camera_ts`
+- [x] `ix_traffic_source_batch`
 - [x] unique key 후보: `(source_batch_id, raw_ref, vehicle_type, direction)`
 
 ### 7.4 별도 운영 이력 테이블 미도입
@@ -375,7 +419,7 @@ metric 규칙:
 - [x] `batch_runs`, `batch_run_files`, `batch_quarantine`는 만들지 않는다.
 - [x] 운영 중 재처리가 필요하면 대상 일자/매체 데이터를 삭제 후 다시 적재한다.
 - [x] 실패/제외 row는 영구 저장 테이블이 아니라 로그와 테스트 결과로 확인한다.
-- [ ] loader는 삭제 후 재생성 또는 upsert 중 하나로 동작 방식을 고정한다.
+- [x] loader는 삭제 후 재생성 또는 upsert 중 하나로 동작 방식을 고정한다.
 
 ---
 
@@ -385,90 +429,90 @@ metric 규칙:
 
 대상 파일:
 
-- [ ] `src/models.py`
-- [ ] 신규 `dashboard_registry.py`
-- [ ] 신규 `collector.py`
-- [ ] 신규 parser/normalization/loader 파일
-- [ ] `README.md`
+- [x] `src/models.py`
+- [x] 신규 `dashboard_registry.py`
+- [x] 신규 `collector.py`
+- [x] 신규 parser/normalization/loader 파일
+- [x] `README.md`
 
 작업:
 
-- [ ] 현재 스캐폴드 모델을 실제 raw schema 기준으로 재정의
-- [ ] env var 계약을 `MEDIA_BATCH_` 기준으로 고정
-- [ ] `run-batch` 명령 추가 계획 확정
-- [ ] `PipelineBuilder.timezone_name`을 `UTC`로 통일
+- [x] 현재 스캐폴드 모델을 실제 raw schema 기준으로 재정의
+- [x] env var 계약을 `MEDIA_BATCH_` 기준으로 고정
+- [x] `run-batch` 명령 추가 계획 확정
+- [x] `PipelineBuilder.timezone_name`을 `UTC`로 통일
 
 ### 8.2 Phase 1. dashboard registry 조회 (`Feature`)
 
-- [ ] `media_id`로 active cameras 조회
-- [ ] `camera_code`, `source_type`, `media_id` binding 생성
-- [ ] `media_campaign_map`, `campaign_schedules`, `creatives` 로딩 함수 추가
+- [x] `media_id`로 active cameras 조회
+- [x] `camera_code`, `source_type`, `media_id` binding 생성
+- [x] `media_campaign_map`, `campaign_schedules`, `creatives` 로딩 함수 추가
 
 ### 8.3 Phase 2. source object 수집 (`Feature`)
 
-- [ ] camera/source_type별 S3 prefix 계산
-- [ ] object listing
-- [ ] local raw root fallback
-- [ ] object metadata manifest 생성
-- [ ] 페이지네이션 누락 없이 완전 수집
+- [x] camera/source_type별 S3 prefix 계산
+- [x] object listing
+- [x] local raw root fallback
+- [x] object metadata manifest 생성
+- [x] 페이지네이션 누락 없이 완전 수집
 
 ### 8.4 Phase 3. parser 구현 (`Feature`)
 
-- [ ] line-by-line jsonl 스트리밍 파싱
-- [ ] typed DTO 변환
-- [ ] invalid timestamp/numeric/enum reject taxonomy 구현
-- [ ] `raw_ref = {s3_key}:{line_number}` 규칙 고정
+- [x] line-by-line jsonl 스트리밍 파싱
+- [x] typed DTO 변환
+- [x] invalid timestamp/numeric/enum reject taxonomy 구현
+- [x] `raw_ref = {s3_key}:{line_number}` 규칙 고정
 
 완료 조건:
 
-- [ ] 샘플 jsonl을 실제 parser로 읽어 DTO를 만든다.
-- [ ] 잘못된 row는 reject 결과로 분리되고 로드 대상에서 제외된다.
+- [x] 샘플 jsonl을 실제 parser로 읽어 DTO를 만든다.
+- [x] 잘못된 row는 reject 결과로 분리되고 로드 대상에서 제외된다.
 
 ### 8.5 Phase 4. demographic normalization (`Feature`)
 
-- [ ] `DemographicRawRecord -> AudienceFactDraft[]`
-- [ ] total/gender/age 세그먼트 분해
-- [ ] threshold row 생성
-- [ ] attentive/watched 산식 적용
+- [x] `DemographicRawRecord -> AudienceFactDraft[]`
+- [x] total/gender/age 세그먼트 분해
+- [x] threshold row 생성
+- [x] attentive/watched 산식 적용
 
 ### 8.6 Phase 5. floating normalization (`Feature`)
 
-- [ ] vehicle type 분류
-- [ ] direction/status 정규화
-- [ ] `FloatingRawRecord -> TrafficDraft[]`
-- [ ] pedestrian pattern row 정책 적용
+- [x] vehicle type 분류
+- [x] direction/status 정규화
+- [x] `FloatingRawRecord -> TrafficDraft[]`
+- [x] pedestrian pattern row 정책 적용
 
 ### 8.7 Phase 6. attribution (`Feature`)
 
-- [ ] media/campaign schedule overlap 매칭
-- [ ] creative_name 해소
-- [ ] 복수 campaign 매칭 시 reject 정책 반영
+- [x] media/campaign schedule overlap 매칭
+- [x] creative_name 해소
+- [x] 복수 campaign 매칭 시 reject 정책 반영
 
 ### 8.8 Phase 7. loader 구현 (`Feature`)
 
-- [ ] audience fact idempotent insert/upsert
-- [ ] traffic idempotent insert/upsert
-- [ ] `source_batch_id` 생성 규칙 구현
-- [ ] 삭제 후 재생성 모드와 upsert 모드 중 하나를 고정
+- [x] audience fact idempotent insert/upsert
+- [x] traffic idempotent insert/upsert
+- [x] `source_batch_id` 생성 규칙 구현
+- [x] 삭제 후 재생성 모드와 upsert 모드 중 하나를 고정
 
 완료 조건:
 
-- [ ] 같은 원천 파일을 다시 처리해도 중복 적재되지 않는다.
-- [ ] 삭제 후 재생성 또는 upsert 재실행 모두 예측 가능하게 동작한다.
+- [x] 같은 원천 파일을 다시 처리해도 중복 적재되지 않는다.
+- [x] 삭제 후 재생성 또는 upsert 재실행 모두 예측 가능하게 동작한다.
 
 ### 8.9 Phase 8. aggregate / verify (`Feature`)
 
-- [ ] aggregate ETL 호출 방식 확정
-- [ ] raw count vs loaded count 검증
-- [ ] aggregate row 생성 여부 검증
-- [ ] UTC 저장 후 dashboard 조회 시 사용자 시간대(기본 KST) 기준으로 기대한 날짜/시간에 노출되는지 검증
+- [x] aggregate ETL 호출 방식 확정
+- [x] raw count vs loaded count 검증
+- [x] aggregate row 생성 여부 검증
+- [x] UTC 저장 후 dashboard 조회 시 사용자 시간대(기본 KST) 기준으로 기대한 날짜/시간에 노출되는지 검증
 
 ### 8.10 Phase 9. CLI 운영화 (`Feature`)
 
-- [ ] `run-batch` 명령 추가
-- [ ] `--dry-run`
-- [ ] `--source-type demographic|floating|all`
-- [ ] `--camera-code`
+- [x] `run-batch` 명령 추가
+- [x] `--dry-run`
+- [x] `--source-type demographic|floating|all`
+- [x] `--camera-code`
 
 ---
 
@@ -476,30 +520,30 @@ metric 규칙:
 
 ### 9.1 단위 테스트
 
-- [ ] parser demographic
-- [ ] parser floating
-- [ ] demographic normalization
-- [ ] floating normalization
+- [x] parser demographic
+- [x] parser floating
+- [x] demographic normalization
+- [x] floating normalization
 - [ ] attribution
-- [ ] step/status validation
+- [x] step/status validation
 
 ### 9.2 통합 테스트
 
-- [ ] media binding -> object listing
-- [ ] demographic file -> audience facts -> aggregate ETL
-- [ ] floating file -> traffic
-- [ ] dry-run / rerun idempotency
-- [ ] UTC 저장 후 KST 조회 경계 테스트
+- [x] media binding -> object listing
+- [x] demographic file -> audience facts -> aggregate ETL
+- [x] floating file -> traffic
+- [x] dry-run / rerun idempotency
+- [x] UTC 저장 후 KST 조회 경계 테스트
 
 ### 9.3 샘플 기반 golden 테스트
 
-- [ ] `project-pooh-kt/docs/demographic.jsonl`
-- [ ] `project-pooh-kt/docs/floating.jsonl`
-- [ ] accepted row 수
-- [ ] rejected row 수
-- [ ] generated fact 수
-- [ ] generated traffic 수
-- [ ] UTC 자정 경계 row의 조회 날짜/시간
+- [x] `project-pooh-kt/docs/demographic.jsonl`
+- [x] `project-pooh-kt/docs/floating.jsonl`
+- [x] accepted row 수
+- [x] rejected row 수
+- [x] generated fact 수
+- [x] generated traffic 수
+- [x] UTC 자정 경계 row의 조회 날짜/시간
 
 ---
 
@@ -517,10 +561,10 @@ uv run python -m src.main run-batch --target-date 2026-04-23 --media-id 101 --dr
 
 운영 검증:
 
-- [ ] batch 완료 후 `audience_event_fact` row 존재
-- [ ] batch 완료 후 `traffic` row 존재
-- [ ] aggregate row 생성 확인
-- [ ] 사용자 시간대가 KST일 때 UTC 저장 데이터가 기대한 로컬 날짜/시간으로 조회되는지 확인
+- [x] batch 완료 후 `audience_event_fact` row 존재
+- [x] batch 완료 후 `traffic` row 존재
+- [x] aggregate row 생성 확인
+- [x] 사용자 시간대가 KST일 때 UTC 저장 데이터가 기대한 로컬 날짜/시간으로 조회되는지 확인
 
 ---
 
