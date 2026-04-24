@@ -636,14 +636,19 @@ run-trajectory-batch
 
 ### 7.2 Phase B. Stage Wrapperization (`Feature`)
 
-- [ ] preprocess wrapper 추가
-- [ ] local stitch wrapper 추가
-- [ ] revised global wrapper 추가
-- [ ] metrics/routes wrapper 추가
+- [x] preprocess wrapper 추가
+- [x] local stitch wrapper 추가
+- [x] revised global wrapper 추가
+- [x] metrics/routes wrapper 추가
 
 완료 조건:
 
-- [ ] 노트북 함수 호출을 batch 코드에서 재현할 수 있다.
+- [x] 노트북 함수 호출을 batch 코드에서 재현할 수 있다.
+
+비고:
+
+- [x] `src/trajectory/stages.py`는 외부 runner/notebook 함수들을 주입받는 Boundary/Shell이다.
+- [x] 06 노트북 내부 함수의 알고리즘 복사는 아직 하지 않고, 호출 순서와 인자 계약을 테스트로 고정했다.
 
 ### 7.3 Phase C. Artifact Storage (`Feature`)
 
