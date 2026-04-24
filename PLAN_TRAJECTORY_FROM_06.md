@@ -247,20 +247,24 @@ run-trajectory-batch
 
 ### 4.1 파일 적재 대상
 
-- [ ] `prepared_all`
-- [ ] `stitched_df_all`
-- [ ] `presence_episode_df`
-- [ ] `episode_units_df`
-- [ ] `transition_units_df`
-- [ ] `transition_nodes_df`
-- [ ] `global_candidate_edges_df`
-- [ ] `selected_global_edges_df`
-- [ ] `base_global_units_df`
-- [ ] `base_global_unit_members_df`
-- [ ] `global_units_df`
-- [ ] `global_presence_episode_df`
-- [ ] `hourly_metric_summary_df`
-- [ ] `route_family_df`
+- [x] `prepared_all`
+- [x] `stitched_df_all`
+- [x] `presence_episode_df`
+- [x] `episode_units_df`
+- [x] `transition_units_df`
+- [x] `transition_nodes_df`
+- [x] `global_candidate_edges_df`
+- [x] `selected_global_edges_df`
+- [x] `base_global_units_df`
+- [x] `base_global_unit_members_df`
+- [x] `global_units_df`
+- [x] `global_presence_episode_df`
+- [x] `hourly_metric_summary_df`
+- [x] `route_family_df`
+
+비고:
+
+- [x] 위 항목은 `src/trajectory/contracts.py`의 `ARTIFACT_SPECS`에 `run_root` 상대 경로와 필수 컬럼 계약으로 고정했다.
 
 ### 4.2 DB 적재 우선순위
 
@@ -623,11 +627,12 @@ run-trajectory-batch
 
 - [x] 06 노트북의 stage 입출력 계약을 문서로 분리
 - [x] 각 pickle 산출물의 컬럼 목록을 고정
-- [ ] 노트북 의존 함수 목록과 호출 순서를 명시
+- [x] 노트북 의존 함수 목록과 호출 순서를 명시
 
 완료 조건:
 
 - [x] `06` 노트북을 안 열어도 stage/산출물 계약을 이해할 수 있다.
+- [x] `src/trajectory/contracts.py`와 `tests/trajectory/test_contracts.py`로 stage 순서, 의존 함수, artifact 계약을 검증한다.
 
 ### 7.2 Phase B. Stage Wrapperization (`Feature`)
 
@@ -642,9 +647,9 @@ run-trajectory-batch
 
 ### 7.3 Phase C. Artifact Storage (`Feature`)
 
-- [ ] `run_root` 기준 artifact 저장 경로 고정
-- [ ] pickle/parquet 중 유지 포맷 확정
-- [ ] stage별 output naming 고정
+- [x] `run_root` 기준 artifact 저장 경로 고정
+- [x] pickle/parquet 중 유지 포맷 확정
+- [x] stage별 output naming 고정
 - [ ] dashboard view source가 되는 원본 테이블/뷰 naming 고정
 - [ ] spatial heatmap intermediate artifact naming 고정
 
