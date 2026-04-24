@@ -6,7 +6,15 @@ import typer
 
 from src.common.logging_config import get_logger
 from src.trajectory.contracts import build_trajectory_request
+from src.trajectory.loader import (
+    CameraCodeMapping,
+    TrajectoryLoadContext,
+    build_dashboard_rows,
+    load_artifact_rows,
+    persist_dashboard_rows,
+)
 from src.trajectory.pipeline import TrajectoryPipelineBuilder
+from src.trajectory.spatial import CameraGeoTransform, SpatialCellConfig
 from src.trajectory.verify import verify_artifact_files
 
 app = typer.Typer(no_args_is_help=True)
@@ -32,6 +40,39 @@ def parse_camera_codes(value: str | None) -> tuple[str, ...]:
         camera_code
         for camera_code in (part.strip() for part in value.split(","))
         if camera_code
+    )
+
+
+def parse_camera_map(value: str | None) -> tuple[CameraCodeMapping, ...]:
+    if value is None or not value.strip():
+        return ()
+    return tuple(
+        CameraCodeMapping(camera_name=name.strip(), camera_code=code.strip())
+        for item in value.split(",")
+        if ":" in item
+        for name, code in (item.split(":", 1),)
+        if name.strip() and code.strip()
+    )
+
+
+def parse_geo_transforms(value: str | None) -> tuple[CameraGeoTransform, ...]:
+    if value is None or not value.strip():
+        return ()
+    return tuple(_parse_geo_transform_item(item) for item in value.split(",") if item.strip())
+
+
+def _parse_geo_transform_item(value: str) -> CameraGeoTransform:
+    parts = tuple(part.strip() for part in value.split(":"))
+    if len(parts) != 5:
+        raise typer.BadParameter(
+            "geo-transform must be camera_code:origin_lat:origin_lng:lat_per_y:lng_per_x"
+        )
+    return CameraGeoTransform(
+        camera_code=parts[0],
+        origin_lat=float(parts[1]),
+        origin_lng=float(parts[2]),
+        lat_per_world_y=float(parts[3]),
+        lng_per_world_x=float(parts[4]),
     )
 
 
@@ -98,6 +139,77 @@ def verify_artifacts(
     typer.echo(f"missing_count={summary.missing_count}")
     if not summary.ok:
         raise typer.Exit(code=1)
+
+
+@app.command("load-dashboard")
+def load_dashboard(
+    target_date: Annotated[str, typer.Option("--target-date")],
+    run_root: Annotated[Path, typer.Option("--run-root")],
+    media_id: Annotated[int, typer.Option("--media-id")],
+    database_url: Annotated[str | None, typer.Option("--database-url")] = None,
+    camera_map: Annotated[str | None, typer.Option("--camera-map")] = None,
+    campaign_id: Annotated[int | None, typer.Option("--campaign-id")] = None,
+    creative_id: Annotated[int | None, typer.Option("--creative-id")] = None,
+    source_batch_id: Annotated[str | None, typer.Option("--source-batch-id")] = None,
+    pipeline_version: Annotated[str | None, typer.Option("--pipeline-version")] = None,
+    geo_transform: Annotated[str | None, typer.Option("--geo-transform")] = None,
+    spatial_zoom: Annotated[int, typer.Option("--spatial-zoom")] = 18,
+    spatial_cell_size_degrees: Annotated[
+        float,
+        typer.Option("--spatial-cell-size-degrees"),
+    ] = 0.0001,
+    dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
+) -> None:
+    request = build_trajectory_request(
+        target_date=parse_target_date(target_date),
+        run_root=run_root,
+        media_id=media_id,
+        camera_codes=(),
+        force=False,
+    )
+    if not dry_run and not database_url:
+        raise typer.BadParameter("--database-url is required for non-dry-run")
+    pipeline_plan = TrajectoryPipelineBuilder().build_plan(request)
+    context = TrajectoryLoadContext(
+        target_date=request.target_date,
+        media_id=request.media_id,
+        camera_codes=parse_camera_map(camera_map),
+        campaign_id=campaign_id,
+        creative_id=creative_id,
+        source_batch_id=source_batch_id,
+        pipeline_version=pipeline_version,
+        config_version=pipeline_version,
+        spatial_cell=SpatialCellConfig(
+            zoom=spatial_zoom,
+            cell_size_degrees=spatial_cell_size_degrees,
+        ),
+        geo_transforms=parse_geo_transforms(geo_transform),
+    )
+    rows = build_dashboard_rows(load_artifact_rows(pipeline_plan.artifacts), context)
+    loaded_count = persist_dashboard_rows(
+        rows,
+        database_url=database_url,
+        media_id=request.media_id,
+        target_date=request.target_date,
+        dry_run=dry_run,
+    )
+    logger.info(
+        "trajectory_dashboard_rows_loaded",
+        target_date=request.target_date.isoformat(),
+        media_id=request.media_id,
+        dry_run=dry_run,
+        loaded_count=loaded_count,
+    )
+    typer.echo(f"target_date={request.target_date.isoformat()}")
+    typer.echo(f"media_id={request.media_id}")
+    typer.echo(f"dry_run={dry_run}")
+    typer.echo(f"presence_episodes={len(rows.presence_episodes)}")
+    typer.echo(f"global_units={len(rows.global_units)}")
+    typer.echo(f"global_presence_episodes={len(rows.global_presence_episodes)}")
+    typer.echo(f"hourly_metrics={len(rows.hourly_metrics)}")
+    typer.echo(f"route_families={len(rows.route_families)}")
+    typer.echo(f"spatial_heatmap_cells={len(rows.spatial_heatmap_cells)}")
+    typer.echo(f"loaded_count={loaded_count}")
 
 
 def main() -> None:

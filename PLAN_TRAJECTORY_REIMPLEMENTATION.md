@@ -23,9 +23,9 @@
 - [ ] `src/trajectory/stages.py`에서 06 노트북 내부 함수 호출 의존을 제거한다.
 - [ ] 노트북 산출물과 동일한 artifact 계약을 자체 코드로 생성한다.
 - [ ] 핵심 로직은 작고 순수한 함수로 분리한다.
-- [ ] I/O, pickle 저장, 외부 파일 읽기, DB 적재는 Boundary/Shell에 격리한다.
+- [~] I/O, pickle 저장, 외부 파일 읽기, DB 적재는 Boundary/Shell에 격리한다.
 - [ ] 각 단계는 golden fixture와 unit test로 검증한다.
-- [ ] dashboard 적재 계약은 기존 `PLAN_TRAJECTORY_FROM_06.md`와 호환한다.
+- [x] dashboard 적재 계약은 기존 `PLAN_TRAJECTORY_FROM_06.md`와 호환한다.
 
 ### 1.2 비목표
 
@@ -50,9 +50,11 @@
 ```text
 src/trajectory/
 ├── __init__.py
+├── loader.py
 ├── contracts.py
 ├── main.py
 ├── pipeline.py
+├── spatial.py
 ├── stages.py
 └── verify.py
 ```
@@ -61,7 +63,9 @@ src/trajectory/
 
 - [x] `contracts.py`: stage 순서, artifact 경로, 필수 컬럼 계약
 - [x] `pipeline.py`: 순수 plan builder
-- [x] `main.py`: `plan`, `verify-artifacts` CLI
+- [x] `main.py`: `plan`, `verify-artifacts`, `load-dashboard` CLI
+- [x] `loader.py`: artifact row 로드와 dashboard 적재 row 변환/저장
+- [x] `spatial.py`: world xy -> geo/grid cell 변환
 - [x] `verify.py`: artifact 존재 검증
 - [x] `stages.py`: 외부 runner/notebook 함수 호출 Boundary/Shell
 
@@ -77,7 +81,7 @@ src/trajectory/
 ### 3.1 권장 순서
 
 1. [ ] golden artifact 고정
-2. [ ] artifact loader/validator 구현
+2. [~] artifact loader/validator 구현
 3. [ ] metrics와 route family부터 자체 구현
 4. [ ] global unit finalization 자체 구현
 5. [ ] episode assignment 자체 구현
@@ -100,13 +104,13 @@ src/trajectory/
 
 목표:
 
-- [ ] 노트북 결과와 자체 구현 결과를 비교할 기준을 만든다.
+- [~] 노트북 결과와 자체 구현 결과를 비교할 기준을 만든다.
 
 작업:
 
-- [ ] `tests/fixtures/trajectory/golden/` 경로 결정
+- [x] `tests/fixtures/trajectory/golden/` 경로 결정
 - [ ] 최소 golden run 선정
-- [ ] golden artifact 목록 고정
+- [x] golden artifact 목록 고정
   - [ ] `presence_episode_df.pkl`
   - [ ] `transition_units_df.pkl`
   - [ ] `transition_nodes_df.pkl`
@@ -114,7 +118,7 @@ src/trajectory/
   - [ ] `global_presence_episode_df.pkl`
   - [ ] `hourly_metric_summary_df.pkl`
   - [ ] `route_family_df.pkl`
-- [ ] golden manifest 작성
+- [~] golden manifest 작성
   - [ ] source notebook path
   - [ ] run date
   - [ ] config hash 또는 config snapshot
@@ -123,43 +127,54 @@ src/trajectory/
 
 완료 조건:
 
-- [ ] 테스트가 golden artifact 존재 여부를 확인한다.
-- [ ] golden artifact가 없으면 명확한 skip 또는 실패 정책을 따른다.
+- [x] 테스트가 golden artifact 존재 여부를 확인한다.
+- [x] golden artifact가 없으면 명확한 skip 또는 실패 정책을 따른다.
 
 검증:
 
-- [ ] `tests/trajectory/test_golden_contract.py`
+- [x] `tests/trajectory/test_golden_contract.py`
 
 ### 4.2 Unit B. Artifact Loader와 Column Validator (`Feature`)
 
 목표:
 
-- [ ] pickle artifact를 안전하게 읽고 컬럼 계약을 검증한다.
+- [x] pickle artifact를 안전하게 읽고 컬럼 계약을 검증한다.
 
 작업:
 
-- [ ] `src/trajectory/artifacts.py`
-- [ ] `load_pickle_artifact(path)`
-- [ ] `validate_required_columns(frame, spec)`
-- [ ] `summarize_artifact(frame)`
-- [ ] artifact별 row count/column set summary 생성
+- [x] `src/trajectory/artifacts.py`
+- [x] `load_pickle_artifact(path)`
+- [x] `validate_required_columns(frame, spec)`
+- [x] `summarize_artifact(frame)`
+- [x] artifact별 row count/column set summary 생성
+
+현재 판단:
+
+- [x] dashboard 적재용 `loader.py`의 artifact 읽기와 재구현용 contract 검증은 분리한다.
+- [x] Unit B는 `loader.py`를 대체하지 않고 공용 artifact 유틸을 추가하는 형태로 진행한다.
+- [x] `read_artifact_rows()`는 Unit B 구현 이후 공용 loader를 재사용하도록 정리한다.
 
 완료 조건:
 
-- [ ] 누락 파일, 잘못된 확장자, 필수 컬럼 누락을 명확한 예외로 처리한다.
-- [ ] 검증 로직은 pandas I/O를 제외하면 순수 함수로 분리한다.
+- [x] 누락 파일, 잘못된 확장자, 필수 컬럼 누락을 명확한 예외로 처리한다.
+- [x] 검증 로직은 pandas I/O를 제외하면 순수 함수로 분리한다.
 
 검증:
 
-- [ ] 정상 artifact 검증 테스트
-- [ ] 컬럼 누락 테스트
-- [ ] 빈 frame 테스트
+- [x] 정상 artifact 검증 테스트
+- [x] 컬럼 누락 테스트
+- [x] 빈 frame 테스트
 
 ### 4.3 Unit C. Route Family 자체 구현 (`Feature`)
 
 목표:
 
-- [ ] `kt_route_grid_v2.build_route_family_table` 호출을 제거할 수 있게 한다.
+- [~] `kt_route_grid_v2.build_route_family_table` 호출을 제거할 수 있게 한다.
+
+선행 조건:
+
+- [x] Unit B의 artifact contract 검증이 먼저 준비되어 있어야 한다.
+- [ ] golden fixture 또는 최소 synthetic fixture가 있어야 한다.
 
 입력:
 
@@ -172,15 +187,15 @@ src/trajectory/
 
 작업:
 
-- [ ] `src/trajectory/routes.py`
-- [ ] `build_route_family_table(global_units, global_presence)`
-- [ ] `route_family_id = "RF_" + camera_path.replace(">", "_")`
-- [ ] `unit_count`
-- [ ] `visible_unit_count`
-- [ ] `median_visible_dwell_s`
-- [ ] `mean_route_confidence`
-- [ ] `median_elapsed_s`
-- [ ] `route_grid_version`
+- [x] `src/trajectory/routes.py`
+- [x] `build_route_family_table(global_units, global_presence)`
+- [x] `route_family_id = "RF_" + camera_path.replace(">", "_")`
+- [x] `unit_count`
+- [x] `visible_unit_count`
+- [x] `median_visible_dwell_s`
+- [x] `mean_route_confidence`
+- [x] `median_elapsed_s`
+- [x] `route_grid_version`
 
 완료 조건:
 
@@ -190,14 +205,19 @@ src/trajectory/
 
 검증:
 
-- [ ] pure unit test
+- [x] pure unit test
 - [ ] golden 비교 test
 
 ### 4.4 Unit D. Hourly Metrics 자체 구현 (`Feature`)
 
 목표:
 
-- [ ] `build_corrected_hourly_metrics` 노트북 함수 호출을 제거할 수 있게 한다.
+- [~] `build_corrected_hourly_metrics` 노트북 함수 호출을 제거할 수 있게 한다.
+
+선행 조건:
+
+- [x] Unit B의 artifact contract 검증이 먼저 준비되어 있어야 한다.
+- [ ] golden fixture 또는 최소 synthetic fixture가 있어야 한다.
 
 입력:
 
@@ -210,19 +230,19 @@ src/trajectory/
 
 작업:
 
-- [ ] `src/trajectory/metrics.py`
-- [ ] hourly bucket 생성
-- [ ] `global_unit_id` 기준 visible interval union
-- [ ] `unique_global_units`
-- [ ] `single_camera_units`
-- [ ] `multi_camera_units`
-- [ ] `mean_n_cameras`
-- [ ] `visible_unique_units`
-- [ ] `visible_episode_count`
-- [ ] `visible_camera_count`
-- [ ] `kpi_visible_unique_units`
-- [ ] `total_visible_dwell_s`
-- [ ] percentile metrics
+- [x] `src/trajectory/metrics.py`
+- [x] hourly bucket 생성
+- [x] `global_unit_id` 기준 visible interval union
+- [x] `unique_global_units`
+- [x] `single_camera_units`
+- [x] `multi_camera_units`
+- [x] `mean_n_cameras`
+- [x] `visible_unique_units`
+- [x] `visible_episode_count`
+- [x] `visible_camera_count`
+- [x] `kpi_visible_unique_units`
+- [x] `total_visible_dwell_s`
+- [x] percentile metrics
 
 완료 조건:
 
@@ -232,15 +252,15 @@ src/trajectory/
 
 검증:
 
-- [ ] interval union unit test
-- [ ] hour boundary test
+- [x] interval union unit test
+- [x] hour boundary test
 - [ ] golden 비교 test
 
 ### 4.5 Unit E. Global Unit Finalization 자체 구현 (`Feature`)
 
 목표:
 
-- [ ] `finalize_global_units` 노트북 함수 호출을 제거할 수 있게 한다.
+- [~] `finalize_global_units` 노트북 함수 호출을 제거할 수 있게 한다.
 
 입력:
 
@@ -253,11 +273,11 @@ src/trajectory/
 
 작업:
 
-- [ ] `src/trajectory/global_units.py`
-- [ ] visible span 계산
-- [ ] visible episode count 계산
-- [ ] visible camera count 계산
-- [ ] base global unit과 merge
+- [x] `src/trajectory/global_units.py`
+- [x] visible span 계산
+- [x] visible episode count 계산
+- [x] visible camera count 계산
+- [x] base global unit과 merge
 
 완료 조건:
 
@@ -266,14 +286,14 @@ src/trajectory/
 
 검증:
 
-- [ ] pure unit test
+- [x] pure unit test
 - [ ] golden 비교 test
 
 ### 4.6 Unit F. Episode Assignment 자체 구현 (`Feature`)
 
 목표:
 
-- [ ] `assign_episodes_to_global_units` 노트북 함수 호출을 제거할 수 있게 한다.
+- [~] `assign_episodes_to_global_units` 노트북 함수 호출을 제거할 수 있게 한다.
 
 입력:
 
@@ -287,9 +307,9 @@ src/trajectory/
 
 작업:
 
-- [ ] episode와 global unit의 시간 overlap 계산
-- [ ] camera/local unit 관계 해소
-- [ ] `assignment_mode` 정책 고정
+- [x] episode와 global unit의 시간 overlap 계산
+- [x] camera/local unit 관계 해소
+- [x] `assignment_mode` 정책 고정
 
 완료 조건:
 
@@ -298,15 +318,15 @@ src/trajectory/
 
 검증:
 
-- [ ] overlap pure unit test
-- [ ] duplicate assignment test
+- [x] overlap pure unit test
+- [x] duplicate assignment test
 - [ ] golden 비교 test
 
 ### 4.7 Unit G. Global Unit Materialization 자체 구현 (`Feature`)
 
 목표:
 
-- [ ] `materialize_revised_global_units` 노트북 함수 호출을 제거할 수 있게 한다.
+- [~] `materialize_revised_global_units` 노트북 함수 호출을 제거할 수 있게 한다.
 
 입력:
 
@@ -320,10 +340,10 @@ src/trajectory/
 
 작업:
 
-- [ ] selected edge graph 구성
-- [ ] connected component 또는 path 기반 global unit 구성
-- [ ] camera path 계산
-- [ ] global confidence 계산
+- [x] selected edge graph 구성
+- [x] connected component 또는 path 기반 global unit 구성
+- [x] camera path 계산
+- [x] global confidence 계산
 
 완료 조건:
 
@@ -332,7 +352,7 @@ src/trajectory/
 
 검증:
 
-- [ ] graph unit test
+- [x] graph unit test
 - [ ] repeated camera policy test
 - [ ] golden 비교 test
 
@@ -340,7 +360,7 @@ src/trajectory/
 
 목표:
 
-- [ ] `solve_revised_global_edges` 노트북 함수 호출을 제거할 수 있게 한다.
+- [~] `solve_revised_global_edges` 노트북 함수 호출을 제거할 수 있게 한다.
 
 입력:
 
@@ -353,9 +373,9 @@ src/trajectory/
 
 작업:
 
-- [ ] cost threshold 적용
-- [ ] bipartite matching 또는 assignment solver 적용
-- [ ] same-camera edge 금지 정책 적용
+- [x] cost threshold 적용
+- [x] bipartite matching 또는 assignment solver 적용
+- [x] same-camera edge 금지 정책 적용
 
 완료 조건:
 
@@ -364,15 +384,15 @@ src/trajectory/
 
 검증:
 
-- [ ] small graph unit test
-- [ ] threshold test
+- [x] small graph unit test
+- [x] threshold test
 - [ ] golden 비교 test
 
 ### 4.9 Unit I. Candidate Edge Scoring 자체 구현 (`Feature`)
 
 목표:
 
-- [ ] `build_revised_candidate_edges` 노트북 함수 호출을 제거할 수 있게 한다.
+- [~] `build_revised_candidate_edges` 노트북 함수 호출을 제거할 수 있게 한다.
 
 입력:
 
@@ -388,12 +408,12 @@ src/trajectory/
 
 작업:
 
-- [ ] gap 계산
-- [ ] expected gap 계산
-- [ ] shortest path distance 결합
-- [ ] implied speed 계산
-- [ ] transition score 반영
-- [ ] total edge cost 계산
+- [x] gap 계산
+- [x] expected gap 계산
+- [x] shortest path distance 결합
+- [x] implied speed 계산
+- [x] transition score 반영
+- [x] total edge cost 계산
 
 완료 조건:
 
@@ -402,15 +422,15 @@ src/trajectory/
 
 검증:
 
-- [ ] scoring pure unit test
-- [ ] impossible speed filter test
+- [x] scoring pure unit test
+- [x] impossible speed filter test
 - [ ] golden 비교 test
 
 ### 4.10 Unit J. Revised Global Input 자체 구현 (`Feature`)
 
 목표:
 
-- [ ] `build_revised_global_inputs` 노트북 함수 호출을 제거할 수 있게 한다.
+- [~] `build_revised_global_inputs` 노트북 함수 호출을 제거할 수 있게 한다.
 
 입력:
 
@@ -427,11 +447,11 @@ src/trajectory/
 
 작업:
 
-- [ ] prepared column normalization
-- [ ] episode unit 생성
-- [ ] transition support trajectory 필터
-- [ ] route points와 route length 계산
-- [ ] transition node 생성
+- [x] prepared column normalization
+- [x] episode unit 생성
+- [x] transition support trajectory 필터
+- [x] route points와 route length 계산
+- [x] transition node 생성
 
 완료 조건:
 
@@ -440,8 +460,8 @@ src/trajectory/
 
 검증:
 
-- [ ] column normalization unit test
-- [ ] transition node unit test
+- [x] column normalization unit test
+- [x] transition node unit test
 - [ ] golden 비교 test
 
 ### 4.11 Unit K. Topology Static Boundary 정리 (`Feature`)
@@ -547,7 +567,7 @@ src/trajectory/stages.py
 치환 순서:
 
 1. [ ] `build_route_family_table`
-2. [ ] `build_corrected_hourly_metrics`
+2. [~] `build_corrected_hourly_metrics`
 3. [ ] `finalize_global_units`
 4. [ ] `assign_episodes_to_global_units`
 5. [ ] `materialize_revised_global_units`
@@ -557,6 +577,48 @@ src/trajectory/stages.py
 9. [ ] `build_topology_static_stage`
 10. [ ] `run_local_scene_stitch_stage`
 11. [ ] `run_s3_groundplane_stage`
+
+## 6. 현재 구현 상태 요약
+
+- [x] artifact 경로/필수 컬럼 계약은 `contracts.py`에 고정되어 있다.
+- [x] stage wrapper 순서와 외부 함수 호출 경계는 `stages.py`에 고정되어 있다.
+- [x] dashboard 적재용 artifact row 로더와 spatial heatmap row 생성은 별도 구현이 추가되었다.
+- [x] `routes.py`, `metrics.py`의 순수 구현이 추가되었다.
+- [x] `global_units.py`의 순수 구현이 추가되었다.
+- [x] `assignment.py`의 순수 구현이 추가되었다.
+- [x] `materialization.py`의 순수 구현이 추가되었다.
+- [x] `solver.py`의 순수 구현이 추가되었다.
+- [x] `scoring.py`의 순수 구현이 추가되었다.
+- [x] `revised_input.py`의 순수 구현이 추가되었다.
+- [x] `stages.py`에서 기존 delegate를 감싸 `metrics/routes`만 자체 구현으로 대체할 수 있는 adapter가 추가되었다.
+- [x] `stages.py`에서 `finalize_global_units`를 자체 구현으로 대체할 수 있는 adapter가 추가되었다.
+- [x] `stages.py`에서 `assign_episodes_to_global_units`를 자체 구현으로 대체할 수 있는 adapter가 추가되었다.
+- [x] `stages.py`에서 `materialize_revised_global_units`를 자체 구현으로 대체할 수 있는 adapter가 추가되었다.
+- [x] `stages.py`에서 `solve_revised_global_edges`를 자체 구현으로 대체할 수 있는 adapter가 추가되었다.
+- [x] `stages.py`에서 `build_revised_candidate_edges`를 자체 구현으로 대체할 수 있는 adapter가 추가되었다.
+- [x] `stages.py`에서 `build_revised_global_inputs`를 자체 구현으로 대체할 수 있는 adapter가 추가되었다.
+- [x] topology를 제외한 revised-global 내부 체인은 통합 pure adapter로 조합 가능하다.
+- [x] topology만 외부 boundary로 두는 전용 실행 경로가 추가되었다.
+- [x] preprocess/local/topology boundary만 연결하면 전체 흐름을 조합 실행할 수 있는 경로가 추가되었다.
+- [~] 재구현 계획의 핵심인 notebook 함수 제거는 topology/local/preprocess boundary 때문에 아직 완료되지 않았다.
+- [ ] golden fixture와 boundary 단계(`topology/local/preprocess`)는 아직 완료되지 않았다.
+
+## 7. 바로 다음 작업
+
+1. [x] Unit B: `artifacts.py` 추가, pickle 로드/컬럼 검증/summary 테스트 작성
+2. [~] Unit A: golden fixture 경로와 skip 정책 고정
+3. [~] Unit C: `route_family` 자체 구현 및 stage adapter 연결
+4. [~] Unit D: `hourly_metric_summary` 자체 구현 및 stage adapter 연결
+5. [~] Unit E: `global_units` finalization 자체 구현 및 stage adapter 연결
+6. [~] Unit F: `global_presence_episode` assignment 자체 구현 및 stage adapter 연결
+7. [~] Unit G: `base_global_units/base_global_unit_members` materialization 자체 구현 및 stage adapter 연결
+8. [~] Unit H: `selected_global_edges` solver 자체 구현 및 stage adapter 연결
+9. [~] Unit I: `global_candidate_edges` scoring 자체 구현 및 stage adapter 연결
+10. [~] Unit J: `episode_units/transition_units/transition_nodes` revised input 자체 구현 및 stage adapter 연결
+11. [~] topology를 제외한 revised-global 내부 체인 통합 adapter 확인
+12. [~] topology boundary-only 실행 경로 확인
+13. [~] preprocess/local/topology boundary 조합 실행 경로 확인
+14. [ ] Unit L/M: local, preprocess boundary 정리
 
 ## 6. 검증 전략
 

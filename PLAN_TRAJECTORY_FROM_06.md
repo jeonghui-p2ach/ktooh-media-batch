@@ -69,12 +69,12 @@
 
 - [ ] 노트북 없이 배치 명령만으로 preprocess -> local -> revised global -> metrics -> routes를 실행할 수 있어야 한다.
 - [ ] 노트북 산출물과 구조적으로 동일한 적재 대상 계약을 가져야 한다.
-- [ ] 결과를 파일 저장만이 아니라 DB 적재 대상으로도 재사용 가능해야 한다.
-- [ ] local/global/hourly/route 결과를 dashboard가 읽을 수 있는 형태로 노출할 수 있어야 한다.
-- [ ] dashboard 조회 필터는 최소 `media_id`, `camera_name` 또는 `camera_code`, 날짜 범위를 지원해야 한다.
-- [ ] trajectory 결과에도 `campaign_id`, `creative_id` 귀속을 포함해 media/campaign/creative 단위 drill-down이 가능해야 한다.
-- [ ] `hourly_metric_summary` 원본 적재와 dashboard용 집계 view, heatmap 조회 계약을 함께 고정해야 한다.
-- [ ] 지도 위 heatmap을 위해 `world_points` 또는 local world 좌표를 GPS 또는 지도 투영 좌표로 변환하는 계약을 고정해야 한다.
+- [x] 결과를 파일 저장만이 아니라 DB 적재 대상으로도 재사용 가능해야 한다.
+- [x] local/global/hourly/route 결과를 dashboard가 읽을 수 있는 형태로 노출할 수 있어야 한다.
+- [x] dashboard 조회 필터는 최소 `media_id`, `camera_name` 또는 `camera_code`, 날짜 범위를 지원해야 한다.
+- [~] trajectory 결과에도 `campaign_id`, `creative_id` 귀속을 포함해 media/campaign/creative 단위 drill-down이 가능해야 한다.
+- [x] `hourly_metric_summary` 원본 적재와 dashboard용 집계 view, heatmap 조회 계약을 함께 고정해야 한다.
+- [x] 지도 위 heatmap을 위해 `world_points` 또는 local world 좌표를 GPS 또는 지도 투영 좌표로 변환하는 계약을 고정해야 한다.
 
 ### 2.2 비목표
 
@@ -85,10 +85,10 @@
 ### 2.3 완료 정의
 
 - [ ] 배치가 `target_date`, `run_root` 기준으로 06 노트북과 동일한 주요 산출물을 생성한다.
-- [ ] `presence_episode`, `global_units`, `global_presence_episode`, `hourly_metric_summary`, `route_family`의 저장 계약이 고정된다.
+- [x] `presence_episode`, `global_units`, `global_presence_episode`, `hourly_metric_summary`, `route_family`의 저장 계약이 고정된다.
 - [ ] 적어도 파일 기반 golden 비교로 노트북과 일치 여부를 확인할 수 있다.
-- [ ] dashboard가 `media_id + camera` 필터로 trajectory 시간대 패턴, route family, heatmap을 조회할 수 있다.
-- [ ] dashboard가 지도 레이어 위에 trajectory spatial heatmap을 조회할 수 있다.
+- [x] dashboard가 `media_id + camera` 필터로 trajectory 시간대 패턴, route family, heatmap을 조회할 수 있다.
+- [x] dashboard가 지도 레이어 위에 trajectory spatial heatmap을 조회할 수 있다.
 
 ---
 
@@ -277,15 +277,15 @@ run-trajectory-batch
 
 1차 우선:
 
-- [ ] `presence_episode`
-- [ ] `global_units`
-- [ ] `global_presence_episode`
-- [ ] `hourly_metric_summary`
-- [ ] `route_family`
-- [ ] `trajectory_hourly_metrics_dashboard_v`
-- [ ] `trajectory_hourly_heatmap_v`
-- [ ] `trajectory_spatial_heatmap_cells`
-- [ ] `trajectory_spatial_heatmap_dashboard_v`
+- [x] `presence_episode`
+- [x] `global_units`
+- [x] `global_presence_episode`
+- [x] `hourly_metric_summary`
+- [x] `route_family`
+- [x] `trajectory_hourly_metrics_dashboard_v`
+- [x] `trajectory_hourly_heatmap_v`
+- [x] `trajectory_spatial_heatmap_cells`
+- [x] `trajectory_spatial_heatmap_dashboard_v`
 
 2차 후보:
 
@@ -296,28 +296,28 @@ run-trajectory-batch
 
 ### 4.3 DB 테이블 초안
 
-- [ ] `trajectory_presence_episodes`
-- [ ] `trajectory_global_units`
-- [ ] `trajectory_global_presence_episodes`
-- [ ] `trajectory_hourly_metrics`
-- [ ] `trajectory_route_families`
+- [x] `trajectory_presence_episodes`
+- [x] `trajectory_global_units`
+- [x] `trajectory_global_presence_episodes`
+- [x] `trajectory_hourly_metrics`
+- [x] `trajectory_route_families`
 
 ### 4.4 Dashboard 노출 초안
 
 1차 조회 단위:
 
-- [ ] `media_id` 필터
-- [ ] `camera_name` 또는 `camera_code` 필터
-- [ ] `campaign_id` 필터
-- [ ] `creative_id` 필터
+- [x] `media_id` 필터
+- [x] `camera_name` 또는 `camera_code` 필터
+- [x] `campaign_id` 필터
+- [x] `creative_id` 필터
 
 1차 노출 산출물:
 
-- [ ] 시간대별 `unique_global_units`, `visible_unique_units`, `total_visible_dwell_s`
-- [ ] camera x hour heatmap
-- [ ] 지도 위 spatial heatmap
-- [ ] 상위 `route_family`
-- [ ] `global_unit` 상세와 연결 episode 목록
+- [x] 시간대별 `unique_global_units`, `visible_unique_units`, `total_visible_dwell_s`
+- [x] camera x hour heatmap
+- [x] 지도 위 spatial heatmap
+- [x] 상위 `route_family`
+- [x] `global_unit` 상세와 연결 episode 목록
 
 권장:
 
@@ -330,7 +330,7 @@ run-trajectory-batch
 1차 결정:
 
 - [x] 기준 좌표계를 **`EPSG:4326`**으로 고정한다.
-- [ ] camera별 `world_points -> geo` 변환 규칙을 어디서 관리할지 결정
+- [x] camera별 `world_points -> geo` 변환 규칙을 어디서 관리할지 결정
 - [x] point 단위 heatmap으로 갈지, grid cell / polygon 단위 heatmap으로 갈지 결정
 
 권장:
@@ -338,6 +338,7 @@ run-trajectory-batch
 - [x] 저장은 `grid cell` 중심으로 단순화한다. (집계 효율 및 데이터 용량 고려)
 - [x] 최종 조회 좌표계는 **`EPSG:4326`**을 기본으로 사용한다.
 - [x] raw point 전체를 dashboard로 직접 내리지 않고 batch에서 cell 집계를 만든다.
+- [x] 1차 변환 규칙은 `trajectory-batch load-dashboard --geo-transform`의 camera별 affine 설정으로 주입한다.
 
 부록:
 
@@ -662,33 +663,34 @@ run-trajectory-batch
 - [x] `run_root` 기준 artifact 저장 경로 고정
 - [x] pickle/parquet 중 유지 포맷 확정
 - [x] stage별 output naming 고정
-- [ ] dashboard view source가 되는 원본 테이블/뷰 naming 고정
-- [ ] spatial heatmap intermediate artifact naming 고정
+- [x] dashboard view source가 되는 원본 테이블/뷰 naming 고정
+- [x] spatial heatmap intermediate artifact naming 고정
 
 ### 7.4 Phase D. DB Loader (`Feature`)
 
-- [ ] `presence_episode` loader
-- [ ] `global_units` loader
-- [ ] `global_presence_episode` loader
-- [ ] `hourly_metric_summary` loader
-- [ ] `route_family` loader
-- [ ] `media_id`, `camera_code` 차원 적재
-- [ ] `campaign_id`, `creative_id` 귀속 해소
-- [ ] `trajectory_hourly_metrics_dashboard_v` view 생성
-- [ ] `trajectory_hourly_heatmap_v` view 생성
-- [ ] `world_points -> geo/grid cell` 변환 단계 추가
-- [ ] `trajectory_spatial_heatmap_cells` loader 추가
-- [ ] `trajectory_spatial_heatmap_dashboard_v` view 생성
+- [x] `presence_episode` loader
+- [x] `global_units` loader
+- [x] `global_presence_episode` loader
+- [x] `hourly_metric_summary` loader
+- [x] `route_family` loader
+- [x] `media_id`, `camera_code` 차원 적재
+- [~] `campaign_id`, `creative_id` 귀속 해소
+- [x] `trajectory_hourly_metrics_dashboard_v` view 생성
+- [x] `trajectory_hourly_heatmap_v` view 생성
+- [x] `world_points -> geo/grid cell` 변환 단계 추가
+- [x] `trajectory_spatial_heatmap_cells` loader 추가
+- [x] `trajectory_spatial_heatmap_dashboard_v` view 생성
 
 완료 조건:
 
-- [ ] dashboard가 `media_id + camera + campaign + creative` 필터로 trajectory 결과를 읽을 수 있다.
-- [ ] hourly 원본과 dashboard view의 역할이 분리된다.
-- [ ] 지도 heatmap이 사용할 공간 좌표와 geometry가 안정적으로 제공된다.
+- [x] dashboard가 `media_id + camera + campaign + creative` 필터로 trajectory 결과를 읽을 수 있다.
+- [x] hourly 원본과 dashboard view의 역할이 분리된다.
+- [x] 지도 heatmap이 사용할 공간 좌표와 geometry가 안정적으로 제공된다.
 
 ### 7.5 Phase E. Verification (`Feature`)
 
 - [x] 파일 산출물 존재 검증
+- [x] loader dry-run row count 검증
 - [ ] 주요 row count 비교
 - [ ] notebook 결과와 golden 비교
 - [ ] attribution null/중복/충돌 검증
@@ -707,7 +709,7 @@ run-trajectory-batch
 - [ ] 컬럼셋 비교
 - [ ] null/중복/시간 역전 검증
 - [x] artifact 존재 검증
-- [ ] spatial heatmap intermediate artifact 존재 검증
+- [x] spatial heatmap intermediate artifact 존재 검증
 
 ### 8.2 로직 검증
 
@@ -720,13 +722,13 @@ run-trajectory-batch
 - [ ] `campaign_id`, `creative_id` 귀속률과 충돌 케이스 검증
 - [ ] heatmap 집계값과 hourly 원본 합산값 일치 검증
 - [ ] geo 변환 후 point/cell이 camera 실제 영역 밖으로 벗어나지 않는지 검증
-- [ ] 동일 hour 기준 spatial heatmap 총합과 source point 수가 일관되는지 검증
+- [x] 동일 hour 기준 spatial heatmap 총합과 source point 수가 일관되는지 검증
 
 ### 8.3 운영 검증
 
-- [ ] dashboard가 필요한 trajectory 테이블을 실제로 읽을 수 있는지 확인
-- [ ] UTC 저장 / 사용자 시간대 조회 정책을 동일하게 적용
-- [ ] dashboard trajectory 화면이 `media_id`, `camera`, `campaign`, `creative` 필터를 지원하는지 확인
+- [x] dashboard가 필요한 trajectory 테이블을 실제로 읽을 수 있는지 확인
+- [x] UTC 저장 / 사용자 시간대 조회 정책을 동일하게 적용
+- [x] dashboard trajectory 화면이 `media_id`, `camera`, `campaign`, `creative` 필터를 지원하는지 확인
 - [ ] dashboard view와 heatmap 응답 시간이 허용 범위인지 확인
 - [ ] 지도 SDK에서 spatial heatmap layer가 정상 렌더링되는지 확인
 - [ ] 지도 zoom level별 응답량과 렌더링 성능이 허용 범위인지 확인
@@ -737,33 +739,34 @@ run-trajectory-batch
 
 ### 9.1 목표
 
-- [ ] 기존 measurement KPI API와 충돌 없이 trajectory 조회 API를 별도 경로로 추가한다.
-- [ ] 1차는 read-only 조회만 지원한다.
-- [ ] 기존 `AnalyticsRepository`에 무리하게 섞지 않고 trajectory 전용 모델/조회 경계를 만든다.
+- [x] 기존 measurement KPI API와 충돌 없이 trajectory 조회 API를 별도 경로로 추가한다.
+- [x] 1차는 read-only 조회만 지원한다.
+- [x] 기존 `AnalyticsRepository`에 무리하게 섞지 않고 trajectory 전용 모델/조회 경계를 만든다.
 
 ### 9.2 최소 모델 추가
 
 대상 위치:
 
-- [ ] `ktooh-dashboard-poc/app/models/`
-- [ ] `ktooh-dashboard-poc/alembic/versions/`
+- [x] `ktooh-dashboard-poc/app/models/`
+- [x] `ktooh-dashboard-poc/alembic/versions/`
 
 추가 모델:
 
-- [ ] `trajectory_global_unit.py`
-- [ ] `trajectory_global_presence_episode.py`
-- [ ] `trajectory_hourly_metric.py`
-- [ ] `trajectory_route_family.py`
+- [x] `trajectory_presence_episode.py`
+- [x] `trajectory_global_unit.py`
+- [x] `trajectory_global_presence_episode.py`
+- [x] `trajectory_hourly_metric.py`
+- [x] `trajectory_route_family.py`
 
 선택:
 
-- [ ] `trajectory_spatial_heatmap_cell.py`
+- [x] `trajectory_spatial_heatmap_cell.py`
 
 view 또는 읽기 전용 모델:
 
-- [ ] `trajectory_hourly_metrics_dashboard_view.py`
-- [ ] `trajectory_hourly_heatmap_view.py`
-- [ ] `trajectory_spatial_heatmap_dashboard_view.py`
+- [x] `trajectory_hourly_metrics_dashboard_view.py`
+- [x] `trajectory_hourly_heatmap_view.py`
+- [x] `trajectory_spatial_heatmap_dashboard_view.py`
 
 최소 컬럼 원칙:
 
@@ -775,22 +778,22 @@ view 또는 읽기 전용 모델:
 
 대상 위치:
 
-- [ ] `ktooh-dashboard-poc/app/repositories/`
+- [x] `ktooh-dashboard-poc/app/repositories/`
 
 추가 파일:
 
-- [ ] `trajectory_repository.py`
+- [x] `trajectory_repository.py`
 - [ ] 필요 시 `trajectory_map_repository.py`
 
 최소 메서드:
 
-- [ ] `load_hourly_metrics(query)`
-- [ ] `load_camera_hour_heatmap(query)`
-- [ ] `load_spatial_heatmap(query)`
-- [ ] `load_route_families(query)`
-- [ ] `load_global_units(query)`
-- [ ] `load_global_unit_detail(global_unit_id, query)`
-- [ ] `load_global_presence_episodes(global_unit_id, query)`
+- [x] `load_hourly_metrics(query)`
+- [x] `load_camera_hour_heatmap(query)`
+- [x] `load_spatial_heatmap(query)`
+- [x] `load_route_families(query)`
+- [x] `load_global_units(query)`
+- [x] `load_global_unit_detail(global_unit_id, query)`
+- [x] `load_global_presence_episodes(global_unit_id, query)`
 
 구현 원칙:
 
@@ -802,21 +805,21 @@ view 또는 읽기 전용 모델:
 
 대상 위치:
 
-- [ ] `ktooh-dashboard-poc/app/services/analytics/`
+- [x] `ktooh-dashboard-poc/app/services/analytics/`
 
 추가 파일:
 
-- [ ] `trajectory_service.py`
+- [x] `trajectory_service.py`
 - [ ] 필요 시 `trajectory_map_service.py`
 
 최소 메서드:
 
-- [ ] `get_hourly_metrics(...)`
-- [ ] `get_camera_hour_heatmap(...)`
-- [ ] `get_spatial_heatmap(...)`
-- [ ] `get_route_families(...)`
-- [ ] `get_global_units(...)`
-- [ ] `get_global_unit_detail(...)`
+- [x] `get_hourly_metrics(...)`
+- [x] `get_camera_hour_heatmap(...)`
+- [x] `get_spatial_heatmap(...)`
+- [x] `get_route_families(...)`
+- [x] `get_global_units(...)`
+- [x] `get_global_unit_detail(...)`
 
 책임:
 
@@ -829,64 +832,64 @@ view 또는 읽기 전용 모델:
 
 대상 위치:
 
-- [ ] `ktooh-dashboard-poc/app/schemas/`
+- [x] `ktooh-dashboard-poc/app/schemas/`
 
 추가 파일:
 
-- [ ] `trajectory_filter.py`
-- [ ] `trajectory_hourly.py`
-- [ ] `trajectory_route.py`
-- [ ] `trajectory_unit.py`
-- [ ] `trajectory_heatmap.py`
+- [x] `trajectory_filter.py`
+- [x] `trajectory_hourly.py`
+- [x] `trajectory_route.py`
+- [x] `trajectory_unit.py`
+- [x] `trajectory_heatmap.py`
 
 최소 응답 스키마:
 
-- [ ] `TrajectoryHourlyPoint`
-- [ ] `TrajectoryHourlyResponse`
-- [ ] `TrajectoryCameraHourHeatmapCell`
-- [ ] `TrajectoryCameraHourHeatmapResponse`
-- [ ] `TrajectorySpatialHeatmapCell`
-- [ ] `TrajectorySpatialHeatmapResponse`
-- [ ] `TrajectoryRouteFamilyItem`
-- [ ] `TrajectoryRouteFamilyResponse`
-- [ ] `TrajectoryGlobalUnitItem`
-- [ ] `TrajectoryGlobalUnitDetailResponse`
+- [x] `TrajectoryHourlyPoint`
+- [x] `TrajectoryHourlyResponse`
+- [x] `TrajectoryCameraHeatmapCell`
+- [x] `TrajectoryCameraHeatmapResponse`
+- [x] `TrajectorySpatialHeatmapCell`
+- [x] `TrajectorySpatialHeatmapResponse`
+- [x] `TrajectoryRouteFamilyItem`
+- [x] `TrajectoryRouteFamilyResponse`
+- [x] `TrajectoryGlobalUnitItem`
+- [x] `TrajectoryGlobalUnitDetail`
 
 ### 9.6 최소 API 추가
 
 대상 위치:
 
-- [ ] `ktooh-dashboard-poc/app/routes/analytics/`
+- [x] `ktooh-dashboard-poc/app/routes/analytics/`
 
 추가 파일:
 
-- [ ] `trajectory.py`
+- [x] `trajectory.py`
 
 최소 endpoint:
 
-- [ ] `GET /analysis/trajectory/hourly`
-- [ ] `GET /analysis/trajectory/camera-heatmap`
-- [ ] `GET /analysis/trajectory/spatial-heatmap`
-- [ ] `GET /analysis/trajectory/routes`
-- [ ] `GET /analysis/trajectory/units`
-- [ ] `GET /analysis/trajectory/units/{global_unit_id}`
+- [x] `GET /api/v1/analysis/trajectory/hourly`
+- [x] `GET /api/v1/analysis/trajectory/camera-heatmap`
+- [x] `GET /api/v1/analysis/trajectory/spatial-heatmap`
+- [x] `GET /api/v1/analysis/trajectory/routes`
+- [x] `GET /api/v1/analysis/trajectory/units`
+- [x] `GET /api/v1/analysis/trajectory/units/{global_unit_id}`
 
 최소 query parameter:
 
-- [ ] `start_date`
-- [ ] `end_date`
-- [ ] `timezone`
-- [ ] `media_ids`
-- [ ] `camera_codes`
-- [ ] `campaign_ids`
-- [ ] `creative_ids`
-- [ ] `metric`
+- [x] `start_date`
+- [x] `end_date`
+- [x] `timezone`
+- [x] `media_ids`
+- [x] `camera_codes`
+- [x] `campaign_ids`
+- [x] `creative_ids`
+- [x] `metric`
 
 지도 heatmap 전용 추가 parameter:
 
-- [ ] `bbox`
-- [ ] `zoom`
-- [ ] `hour`
+- [x] `bbox`
+- [x] `zoom`
+- [x] `hour`
 
 원칙:
 
@@ -897,33 +900,33 @@ view 또는 읽기 전용 모델:
 
 대상 위치:
 
-- [ ] `ktooh-dashboard-poc/app/providers/repository.py`
-- [ ] `ktooh-dashboard-poc/app/providers/service.py`
-- [ ] `ktooh-dashboard-poc/app/container.py`
+- [x] `ktooh-dashboard-poc/app/providers/repository.py`
+- [x] `ktooh-dashboard-poc/app/providers/service.py`
+- [x] `ktooh-dashboard-poc/app/container.py`
 
 최소 작업:
 
-- [ ] `TrajectoryRepository` 등록
-- [ ] `TrajectoryService` 등록
-- [ ] 새 route 의존성 주입 연결
+- [x] `TrajectoryRepository` 등록
+- [x] `TrajectoryService` 등록
+- [x] 새 route 의존성 주입 연결
 
 ### 9.8 최소 프론트 연결
 
 대상 위치:
 
-- [ ] `ktooh-dashboard-poc/app/templates/pages/dashboard/map.html`
-- [ ] `ktooh-dashboard-poc/app/templates/pages/dashboard/details.html`
-- [ ] `ktooh-dashboard-poc/app/static/features/map/map.js`
-- [ ] 필요 시 `app/static/features/dashboard/details.js`
+- [x] `ktooh-dashboard-poc/app/templates/pages/dashboard/map.html`
+- [x] `ktooh-dashboard-poc/app/templates/pages/dashboard/details.html`
+- [x] `ktooh-dashboard-poc/app/static/features/map/map.js`
+- [x] 필요 시 `app/static/features/dashboard/details.js`
 
 1차 UI:
 
-- [ ] trajectory 탭 또는 카드 추가
-- [ ] 시간대 패턴 차트
-- [ ] camera x hour heatmap
-- [ ] 지도 위 spatial heatmap
-- [ ] 상위 route family 테이블
-- [ ] global unit 상세 모달
+- [x] trajectory 탭 또는 카드 추가
+- [x] 시간대 패턴 차트
+- [x] camera x hour heatmap
+- [x] 지도 위 spatial heatmap
+- [x] 상위 route family 테이블
+- [x] global unit 상세 모달
 
 원칙:
 
@@ -932,33 +935,33 @@ view 또는 읽기 전용 모델:
 
 ### 9.9 최소 Migration / 성능 작업
 
-- [ ] **단일 Alembic Migration 버전** 생성 (테이블 및 뷰 통합)
-- [ ] `media_id`, `camera_code`, `campaign_id`, `creative_id`, 시간 컬럼 index 추가
-- [ ] spatial heatmap용 geometry 또는 cell index 전략 추가
-- [ ] **배치 시점의 Spatial Cell 사전 집계(Materialized View 등)** 검토
+- [x] **단일 Alembic Migration 버전** 생성 (테이블 및 뷰 통합)
+- [x] `media_id`, `camera_code`, `campaign_id`, `creative_id`, 시간 컬럼 index 추가
+- [x] spatial heatmap용 geometry 또는 cell index 전략 추가
+- [x] **배치 시점의 Spatial Cell 사전 집계(Materialized View 등)** 검토
 
 권장 index:
 
-- [ ] `(media_id, target_date, hour_start)`
-- [ ] `(camera_code, target_date, hour_start)`
-- [ ] `(campaign_id, creative_id, hour_start)`
-- [ ] spatial 조회용 `cell_id` 또는 geometry index (PostGIS GIST index 등)
+- [x] `(media_id, target_date, hour_start)`
+- [x] `(camera_code, target_date, hour_start)`
+- [x] `(campaign_id, creative_id, hour_start)`
+- [x] spatial 조회용 `cell_id` 또는 geometry index (PostGIS GIST index 등)
 
 ### 9.10 최소 구현 순서
 
-1. [ ] SQLAlchemy 모델 + migration 추가
-2. [ ] trajectory repository 추가
-3. [ ] trajectory service + schema 추가
-4. [ ] trajectory API route 추가
-5. [ ] map/details 화면에 trajectory 조회 연결
-6. [ ] spatial heatmap 지도 렌더링 연결
+1. [x] SQLAlchemy 모델 + migration 추가
+2. [x] trajectory repository 추가
+3. [x] trajectory service + schema 추가
+4. [x] trajectory API route 추가
+5. [x] map/details 화면에 trajectory 조회 연결
+6. [x] spatial heatmap 지도 렌더링 연결
 7. [ ] 샘플 데이터 기준 응답/성능 검증
 
 ### 9.11 완료 기준
 
-- [ ] `ktooh-dashboard-poc`가 trajectory 원본 테이블과 dashboard view를 읽을 수 있다.
-- [ ] `media_id + camera + campaign + creative` 필터가 동작한다.
-- [ ] 시간대 패턴, camera heatmap, spatial heatmap, route family, global unit detail이 모두 조회된다.
+- [x] `ktooh-dashboard-poc`가 trajectory 원본 테이블과 dashboard view를 읽을 수 있다.
+- [x] `media_id + camera + campaign + creative` 필터가 동작한다.
+- [x] 시간대 패턴, camera heatmap, spatial heatmap, route family, global unit detail이 모두 조회된다.
 
 ---
 

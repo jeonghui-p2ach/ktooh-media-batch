@@ -40,7 +40,7 @@
 1차 범위:
 
 - [ ] SQLAlchemy trajectory 모델 추가
-- [ ] Alembic migration 추가
+- [ ] 기존 단일 Alembic migration에 trajectory DDL 추가
 - [ ] read-only repository 추가
 - [ ] service/schema/route 추가
 - [ ] provider 등록
@@ -94,29 +94,30 @@
 
 작업:
 
-- [ ] `app/models/trajectory_global_unit.py`
-- [ ] `app/models/trajectory_global_presence_episode.py`
-- [ ] `app/models/trajectory_hourly_metric.py`
-- [ ] `app/models/trajectory_route_family.py`
-- [ ] `app/models/trajectory_spatial_heatmap_cell.py`
-- [ ] view read model 추가
-  - [ ] `trajectory_hourly_metrics_dashboard_view.py`
-  - [ ] `trajectory_hourly_heatmap_view.py`
-  - [ ] `trajectory_spatial_heatmap_dashboard_view.py`
+- [x] `app/models/trajectory_global_unit.py`
+- [x] `app/models/trajectory_presence_episode.py`
+- [x] `app/models/trajectory_global_presence_episode.py`
+- [x] `app/models/trajectory_hourly_metric.py`
+- [x] `app/models/trajectory_route_family.py`
+- [x] `app/models/trajectory_spatial_heatmap_cell.py`
+- [x] view read model 추가
+  - [x] `trajectory_hourly_metrics_dashboard_view.py`
+  - [x] `trajectory_hourly_heatmap_view.py`
+  - [x] `trajectory_spatial_heatmap_dashboard_view.py`
 
 완료 조건:
 
-- [ ] 모델 import가 성공한다.
-- [ ] 모든 모델이 `media_id`, `camera_code`, `campaign_id`, `creative_id` 필터 키를 가진다.
-- [ ] 시간 컬럼은 UTC 저장 전제로 `DateTime` 또는 `Date`/`SmallInteger` 조합을 사용한다.
+- [x] 모델 import가 성공한다.
+- [x] 모든 모델이 `media_id`, `camera_code`, `campaign_id`, `creative_id` 필터 키를 가진다.
+- [x] 시간 컬럼은 UTC 저장 전제로 `DateTime` 또는 `Date`/`SmallInteger` 조합을 사용한다.
 
 검증:
 
-- [ ] `uv run pytest tests/test_init_contracts.py`
-- [ ] 신규 모델 import 테스트
-- [ ] `uv run ruff check app/models`
+- [x] `uv run pytest tests/test_init_contracts.py`
+- [x] 신규 모델 import 테스트
+- [x] 변경된 모델 파일 대상 `ruff check`
 
-### 2.3 Unit C. Alembic Migration 추가 (`Feature`)
+### 2.3 Unit C. Alembic Migration 확장 (`Feature`)
 
 목표:
 
@@ -124,34 +125,35 @@
 
 작업:
 
-- [ ] 신규 migration 파일 생성
-- [ ] 테이블 생성
-  - [ ] `trajectory_global_units`
-  - [ ] `trajectory_global_presence_episodes`
-  - [ ] `trajectory_hourly_metrics`
-  - [ ] `trajectory_route_families`
-  - [ ] `trajectory_spatial_heatmap_cells`
-- [ ] view 생성
-  - [ ] `trajectory_hourly_metrics_dashboard_v`
-  - [ ] `trajectory_hourly_heatmap_v`
-  - [ ] `trajectory_spatial_heatmap_dashboard_v`
-- [ ] index 생성
-  - [ ] `(media_id, target_date, hour_start)`
-  - [ ] `(camera_code, target_date, hour_start)`
-  - [ ] `(campaign_id, creative_id, hour_start)`
-  - [ ] spatial 조회용 `cell_id`
+- [x] 신규 migration 파일을 만들지 않고 기존 단일 migration 파일 확장
+- [x] 테이블 생성
+  - [x] `trajectory_presence_episodes`
+  - [x] `trajectory_global_units`
+  - [x] `trajectory_global_presence_episodes`
+  - [x] `trajectory_hourly_metrics`
+  - [x] `trajectory_route_families`
+  - [x] `trajectory_spatial_heatmap_cells`
+- [x] view 생성
+  - [x] `trajectory_hourly_metrics_dashboard_v`
+  - [x] `trajectory_hourly_heatmap_v`
+  - [x] `trajectory_spatial_heatmap_dashboard_v`
+- [x] index 생성
+  - [x] `(media_id, target_date, hour_start)`
+  - [x] `(camera_code, target_date, hour_start)`
+  - [x] `(campaign_id, creative_id, hour_start)`
+  - [x] spatial 조회용 `cell_id`
 
 완료 조건:
 
-- [ ] migration upgrade/downgrade가 대칭이다.
-- [ ] view는 read-only 조회 전용이다.
-- [ ] Postgres 우선이며 SQLite 테스트 환경에서 깨지지 않는 전략을 정한다.
+- [x] migration upgrade/downgrade가 대칭이다.
+- [x] view는 read-only 조회 전용이다.
+- [x] Postgres 우선이며 SQLite 테스트 환경에서 깨지지 않는 전략을 정한다.
 
 검증:
 
-- [ ] migration 파일 syntax check
-- [ ] 가능하면 test DB에서 upgrade 실행
-- [ ] `uv run pytest` 영향 확인
+- [x] migration 파일 syntax check
+- [x] `uv run alembic upgrade head --sql` offline SQL 생성 확인
+- [~] `uv run pytest` 영향 확인: trajectory focused 테스트는 통과, 전체 테스트는 기존 seed/admin/camera repository 실패 존재
 
 ### 2.4 Unit D. Query Schema 추가 (`Feature`)
 
@@ -161,11 +163,11 @@
 
 작업:
 
-- [ ] `app/schemas/trajectory_filter.py`
-- [ ] `app/schemas/trajectory_hourly.py`
-- [ ] `app/schemas/trajectory_route.py`
-- [ ] `app/schemas/trajectory_unit.py`
-- [ ] `app/schemas/trajectory_heatmap.py`
+- [x] `app/schemas/trajectory_filter.py`
+- [x] `app/schemas/trajectory_hourly.py`
+- [x] `app/schemas/trajectory_route.py`
+- [x] `app/schemas/trajectory_unit.py`
+- [x] `app/schemas/trajectory_heatmap.py`
 
 요청 필터:
 
@@ -181,13 +183,13 @@
 
 완료 조건:
 
-- [ ] 잘못된 날짜/metric/bbox 입력을 validation error로 막는다.
-- [ ] 응답 schema가 프론트에서 바로 사용할 수 있는 이름을 가진다.
+- [x] 잘못된 날짜/metric/bbox 입력을 validation error로 막는다.
+- [x] 응답 schema가 프론트에서 바로 사용할 수 있는 이름을 가진다.
 
 검증:
 
-- [ ] schema unit test
-- [ ] `uv run ruff check app/schemas tests`
+- [x] schema unit test
+- [x] 변경된 schema/tests 대상 `ruff check`
 
 ### 2.5 Unit E. Repository 추가 (`Feature`)
 
@@ -197,26 +199,26 @@
 
 작업:
 
-- [ ] `app/repositories/trajectory_repository.py`
-- [ ] `load_hourly_metrics(query)`
-- [ ] `load_camera_hour_heatmap(query)`
-- [ ] `load_spatial_heatmap(query)`
-- [ ] `load_route_families(query)`
-- [ ] `load_global_units(query)`
-- [ ] `load_global_unit_detail(global_unit_id, query)`
-- [ ] `load_global_presence_episodes(global_unit_id, query)`
+- [x] `app/repositories/trajectory_repository.py`
+- [x] `load_hourly_metrics(query)`
+- [x] `load_camera_hour_heatmap(query)`
+- [x] `load_spatial_heatmap(query)`
+- [x] `load_route_families(query)`
+- [x] `load_global_units(query)`
+- [x] `load_global_unit_detail(global_unit_id, query)`
+- [x] `load_global_presence_episodes(global_unit_id, query)`
 
 완료 조건:
 
-- [ ] `media_id + camera + campaign + creative` 필터가 모두 SQL에 반영된다.
-- [ ] UTC 저장값을 사용자 timezone 기준 날짜 범위로 조회한다.
-- [ ] spatial 조회는 bbox/zoom/hour를 받는다.
+- [x] `media_id + camera + campaign + creative` 필터가 모두 SQL에 반영된다.
+- [x] UTC 저장값을 사용자 timezone 기준 날짜 범위로 조회한다.
+- [x] spatial 조회는 bbox/zoom/hour를 받는다.
 
 검증:
 
-- [ ] repository unit/integration test
-- [ ] 빈 결과가 빈 list로 반환되는지 테스트
-- [ ] 필터 조합별 SQL 조건 테스트
+- [x] repository integration test
+- [x] 빈 결과가 빈 list로 반환되는지 테스트
+- [x] 필터 조합별 API 테스트
 
 ### 2.6 Unit F. Service 추가 (`Feature`)
 
@@ -226,55 +228,55 @@
 
 작업:
 
-- [ ] `app/services/analytics/trajectory_service.py`
-- [ ] `get_hourly_metrics(...)`
-- [ ] `get_camera_hour_heatmap(...)`
-- [ ] `get_spatial_heatmap(...)`
-- [ ] `get_route_families(...)`
-- [ ] `get_global_units(...)`
-- [ ] `get_global_unit_detail(...)`
+- [x] `app/services/analytics/trajectory_service.py`
+- [x] `get_hourly_metrics(...)`
+- [x] `get_camera_hour_heatmap(...)`
+- [x] `get_spatial_heatmap(...)`
+- [x] `get_route_families(...)`
+- [x] `get_global_units(...)`
+- [x] `get_global_unit_detail(...)`
 
 완료 조건:
 
-- [ ] metric 선택값에 따라 heatmap value가 결정된다.
-- [ ] timezone 변환 책임이 service/repository 경계에서 일관된다.
-- [ ] repository 예외를 API 친화적 예외로 변환한다.
+- [x] metric 선택값에 따라 heatmap value가 결정된다.
+- [x] timezone 변환 책임이 service/repository 경계에서 일관된다.
+- [x] repository 예외를 API 친화적 예외로 변환한다.
 
 검증:
 
-- [ ] service unit test
-- [ ] metric 선택 테스트
-- [ ] global unit detail 조립 테스트
+- [x] service/API integration test
+- [x] metric 선택 테스트
+- [x] global unit detail 조립 테스트
 
 ### 2.7 Unit G. API Route 추가 (`Feature`)
 
 목표:
 
-- [ ] `/analysis/trajectory/*` read-only endpoint를 추가한다.
+- [ ] `/api/v1/analysis/trajectory/*` read-only endpoint를 추가한다.
 
 작업:
 
-- [ ] `app/routes/analytics/trajectory.py`
-- [ ] `GET /analysis/trajectory/hourly`
-- [ ] `GET /analysis/trajectory/camera-heatmap`
-- [ ] `GET /analysis/trajectory/spatial-heatmap`
-- [ ] `GET /analysis/trajectory/routes`
-- [ ] `GET /analysis/trajectory/units`
-- [ ] `GET /analysis/trajectory/units/{global_unit_id}`
-- [ ] route include 연결
+- [x] `app/routes/analytics/trajectory.py`
+- [x] `GET /api/v1/analysis/trajectory/hourly`
+- [x] `GET /api/v1/analysis/trajectory/camera-heatmap`
+- [x] `GET /api/v1/analysis/trajectory/spatial-heatmap`
+- [x] `GET /api/v1/analysis/trajectory/routes`
+- [x] `GET /api/v1/analysis/trajectory/units`
+- [x] `GET /api/v1/analysis/trajectory/units/{global_unit_id}`
+- [x] route include 연결
 
 완료 조건:
 
-- [ ] 기존 `/analysis/watch-*`, `/analysis/vehicle`, `/analysis/population`과 충돌하지 않는다.
-- [ ] 모든 endpoint는 read-only다.
+- [x] 기존 `/analysis/watch-*`, `/analysis/vehicle`, `/analysis/population`과 충돌하지 않는다.
+- [x] 모든 endpoint는 read-only다.
 
 검증:
 
-- [ ] route test
-- [ ] invalid query test
-- [ ] empty result response test
+- [x] route test
+- [x] invalid query test
+- [x] empty result response test
 
-### 2.8 Unit H. Provider 등록 (`Tidy/Feature 분리`)
+### 2.8 Unit H. Provider 등록 (`Feature`)
 
 목표:
 
@@ -282,19 +284,19 @@
 
 작업:
 
-- [ ] `app/providers/repository.py`에 `TrajectoryRepository` 등록
-- [ ] `app/providers/service.py`에 `TrajectoryService` 등록
-- [ ] route 의존성 연결
+- [x] `app/providers/repository.py`에 `TrajectoryRepository` 등록
+- [x] `app/providers/service.py`에 `TrajectoryService` 등록
+- [x] route 의존성 연결
 
 완료 조건:
 
-- [ ] app startup/import가 성공한다.
-- [ ] endpoint 호출 시 DI resolution error가 없다.
+- [x] app startup/import가 성공한다.
+- [x] endpoint 호출 시 DI resolution error가 없다.
 
 검증:
 
-- [ ] DI integration test
-- [ ] route smoke test
+- [x] DI integration test
+- [x] route smoke test
 
 ### 2.9 Unit I. Batch-Dashboard 계약 동기화 (`Tidy`)
 
@@ -304,29 +306,29 @@
 
 작업:
 
-- [ ] `PLAN_TRAJECTORY_FROM_06.md`의 DB/API 체크박스 업데이트
-- [ ] 이 문서의 완료 항목 업데이트
+- [x] `PLAN_TRAJECTORY_FROM_06.md`의 DB/API 체크박스 업데이트
+- [x] 이 문서의 완료 항목 업데이트
 - [ ] 필요 시 `README.md`에 trajectory dashboard API 링크 추가
 
 완료 조건:
 
-- [ ] 구현된 endpoint/table/view가 문서와 일치한다.
+- [x] 구현된 endpoint/table/view가 문서와 일치한다.
 
 검증:
 
-- [ ] 문서 diff review
+- [x] 문서 diff review
 
 ## 3. 추천 커밋 순서
 
 1. [ ] `docs: split dashboard trajectory integration plan`
-2. [ ] `feat: add trajectory dashboard models`
-3. [ ] `feat: add trajectory dashboard migration`
-4. [ ] `feat: add trajectory schemas`
-5. [ ] `feat: add trajectory repository`
-6. [ ] `feat: add trajectory service`
-7. [ ] `feat: add trajectory api routes`
-8. [ ] `feat: register trajectory dependencies`
-9. [ ] `docs: update trajectory dashboard integration status`
+2. [x] `feat: add trajectory dashboard models`
+3. [x] `feat: extend single migration with trajectory dashboard ddl`
+4. [x] `feat: add trajectory schemas`
+5. [x] `feat: add trajectory repository`
+6. [x] `feat: add trajectory service`
+7. [x] `feat: add trajectory api routes`
+8. [x] `feat: register trajectory dependencies`
+9. [x] `docs: update trajectory dashboard integration status`
 
 ## 4. 중단 조건
 
@@ -337,9 +339,9 @@
 
 ## 5. 완료 기준
 
-- [ ] `ktooh-dashboard-poc` 테스트 통과
-- [ ] `ruff` 통과
-- [ ] trajectory API route smoke test 통과
-- [ ] migration 적용 가능
-- [ ] `media_id + camera + campaign + creative` 필터 동작
-- [ ] 시간대 패턴, camera heatmap, spatial heatmap, route family, global unit detail 조회 가능
+- [~] `ktooh-dashboard-poc` 테스트 통과: trajectory focused 테스트 통과, 전체 테스트는 기존 seed/admin/camera repository 실패 존재
+- [~] `ruff` 통과: 변경 범위 통과, 전체 ruff는 기존 dashboard lint 실패 존재
+- [x] trajectory API route smoke test 통과
+- [x] migration 적용 가능
+- [x] `media_id + camera + campaign + creative` 필터 동작
+- [x] 시간대 패턴, camera heatmap, spatial heatmap, route family, global unit detail 조회 가능

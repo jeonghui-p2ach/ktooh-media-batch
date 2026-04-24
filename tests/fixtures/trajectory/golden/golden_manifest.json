@@ -1,0 +1,15 @@
+{
+  "$schema": "manifest_schema",
+  "source_notebook": "ktooh/06.integrated_local_global_revised_pipeline.ipynb",
+  "run_date": "2026-04-24",
+  "expected_files": [
+    "presence_episode_df.pkl",
+    "stitched_df_all.pkl",
+    "episode_units_df.pkl",
+    "transition_units_df.pkl",
+    "global_units_df.pkl",
+    "global_presence_episode_df.pkl",
+    "hourly_metric_summary_df.pkl",
+    "route_family_df.pkl"
+  ]
+}
