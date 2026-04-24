@@ -6,7 +6,7 @@ from typing import Any
 
 from sqlalchemy import create_engine, text
 
-from src.models import AudienceFactDraft
+from src.measurement.models import AudienceFactDraft
 
 
 def load_audience_facts(
@@ -29,7 +29,10 @@ def load_audience_facts(
                     DELETE FROM audience_event_fact
                     WHERE media_id = :media_id
                       AND occurred_date = :target_date
-                      AND source_type IN ('demographic_measurement_v1', 'floating_pedestrian_pattern_v1')
+                      AND source_type IN (
+                          'demographic_measurement_v1',
+                          'floating_pedestrian_pattern_v1'
+                      )
                     """
                 ),
                 {"media_id": media_id, "target_date": target_date},
@@ -93,8 +96,9 @@ def trigger_aggregates(
                         segment_type,
                         segment_value,
                         COALESCE(threshold_sec, 0) AS threshold_sec,
-                        SUM(floating_population), SUM(visible_population), SUM(attentive_population),
-                        SUM(watched_population), SUM(watch_time_seconds), SUM(dwell_time_seconds), SUM(play_count)
+                        SUM(floating_population), SUM(visible_population),
+                        SUM(attentive_population), SUM(watched_population),
+                        SUM(watch_time_seconds), SUM(dwell_time_seconds), SUM(play_count)
                     FROM audience_event_fact
                     WHERE media_id = :media_id
                       AND occurred_date = :target_date
@@ -132,8 +136,9 @@ def trigger_aggregates(
                         segment_type,
                         segment_value,
                         COALESCE(threshold_sec, 0) AS threshold_sec,
-                        SUM(floating_population), SUM(visible_population), SUM(attentive_population),
-                        SUM(watched_population), SUM(watch_time_seconds), SUM(dwell_time_seconds), SUM(play_count)
+                        SUM(floating_population), SUM(visible_population),
+                        SUM(attentive_population), SUM(watched_population),
+                        SUM(watch_time_seconds), SUM(dwell_time_seconds), SUM(play_count)
                     FROM agg_audience_minute
                     WHERE media_id = :media_id
                       AND bucket_start_at >= :start_ts
@@ -141,7 +146,12 @@ def trigger_aggregates(
                     GROUP BY 1,2,3,4,5,6,7,8,9
                     """
                 ),
-                {"media_id": media_id, "target_date": target_date, "start_ts": start_ts, "end_ts": end_ts},
+                {
+                    "media_id": media_id,
+                    "target_date": target_date,
+                    "start_ts": start_ts,
+                    "end_ts": end_ts,
+                },
             )
             connection.execute(
                 text(
@@ -171,8 +181,9 @@ def trigger_aggregates(
                         segment_type,
                         segment_value,
                         COALESCE(threshold_sec, 0) AS threshold_sec,
-                        SUM(floating_population), SUM(visible_population), SUM(attentive_population),
-                        SUM(watched_population), SUM(watch_time_seconds), SUM(dwell_time_seconds), SUM(play_count)
+                        SUM(floating_population), SUM(visible_population),
+                        SUM(attentive_population), SUM(watched_population),
+                        SUM(watch_time_seconds), SUM(dwell_time_seconds), SUM(play_count)
                     FROM agg_audience_hourly
                     WHERE media_id = :media_id
                       AND date = :target_date

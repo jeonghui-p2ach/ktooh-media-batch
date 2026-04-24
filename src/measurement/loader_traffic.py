@@ -6,7 +6,7 @@ from typing import Any
 
 from sqlalchemy import create_engine, text
 
-from src.models import TrafficDraft
+from src.measurement.models import TrafficDraft
 
 
 def load_traffic_rows(

@@ -23,7 +23,7 @@ dev = [
 ]
 
 [project.scripts]
-media-batch = "src.main:app"
+media-batch = "src.measurement.main:app"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

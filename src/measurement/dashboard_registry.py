@@ -6,7 +6,7 @@ from typing import Any
 
 from sqlalchemy import create_engine, text
 
-from src.models import DashboardBinding
+from src.measurement.models import DashboardBinding
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,7 +31,11 @@ class AttributionContext:
     creative_refs: tuple[CreativeRef, ...]
 
 
-def load_dashboard_bindings(*, database_url: str | None, media_id: int) -> tuple[DashboardBinding, ...]:
+def load_dashboard_bindings(
+    *,
+    database_url: str | None,
+    media_id: int,
+) -> tuple[DashboardBinding, ...]:
     if not database_url:
         return ()
     engine = create_engine(database_url)
@@ -125,7 +129,11 @@ def _normalize_source_type(value: Any) -> str:
 def _build_campaign_window(row: Any) -> CampaignWindow:
     started_at = _to_utc_naive(row["started_at"])
     ended_raw = row["ended_at"]
-    ended_at = _to_utc_naive(ended_raw) if ended_raw is not None else started_at + timedelta(minutes=1)
+    ended_at = (
+        _to_utc_naive(ended_raw)
+        if ended_raw is not None
+        else started_at + timedelta(minutes=1)
+    )
     return CampaignWindow(
         media_id=int(row["media_id"]),
         campaign_id=int(row["campaign_id"]),
@@ -136,9 +144,6 @@ def _build_campaign_window(row: Any) -> CampaignWindow:
 
 
 def _to_utc_naive(value: Any) -> datetime:
-    if isinstance(value, datetime):
-        parsed = value
-    else:
-        parsed = datetime.fromisoformat(str(value))
+    parsed = value if isinstance(value, datetime) else datetime.fromisoformat(str(value))
     localized = parsed if parsed.tzinfo else parsed.replace(tzinfo=UTC)
     return localized.astimezone(UTC).replace(tzinfo=None)

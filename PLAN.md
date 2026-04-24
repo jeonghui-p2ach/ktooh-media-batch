@@ -166,28 +166,46 @@ plan
 
 ### 4.2 패키지 구조
 
+현재 적용 구조:
+
 ```text
 src/
-├── main.py
-├── config.py
-├── logging_config.py
-├── models.py
-├── pipeline.py
-├── dashboard_registry.py
-├── collector.py
-├── parser_demographic.py
-├── parser_floating.py
-├── normalization_demographic.py
-├── normalization_floating.py
-├── attribution.py
-├── loader_audience.py
-├── loader_traffic.py
-└── verify.py
+├── common/
+│   ├── config.py
+│   └── logging_config.py
+├── measurement/
+│   ├── main.py
+│   ├── models.py
+│   ├── pipeline.py
+│   ├── dashboard_registry.py
+│   ├── collector.py
+│   ├── parser_demographic.py
+│   ├── parser_floating.py
+│   ├── normalization_demographic.py
+│   ├── normalization_floating.py
+│   ├── attribution.py
+│   ├── loader_audience.py
+│   ├── loader_traffic.py
+│   ├── service.py
+│   └── verify.py
+└── trajectory/
+    └── __init__.py
 ```
+
+완료 결과:
+
+- [x] 기존 measurement batch 평면 구조를 `src/measurement`로 이동
+- [x] 설정과 로깅 경계는 `src/common`으로 분리
+- [x] trajectory 구현 전용 경계로 `src/trajectory` 패키지 생성
+- [x] CLI entrypoint를 `src.measurement.main:app`로 변경
+- [x] 테스트 import를 `src.measurement.*` 기준으로 변경
+- [x] 샘플 테스트 입력은 저장소 내부 `samples/` 경로를 사용
 
 ### 4.3 Measurement / Trajectory 경계
 
-- [x] 현재 `ktooh-media-batch/src`는 measurement batch 전용 패키지다.
+- [x] `ktooh-media-batch/src/measurement`는 measurement batch 전용 패키지다.
+- [x] `ktooh-media-batch/src/trajectory`는 trajectory batch 전용 패키지 경계로 생성했다.
+- [x] `src/common`은 설정/로깅 같은 작은 공유 경계만 가진다.
 - [x] 이 문서의 구현 범위는 `demographic.jsonl`, `floating.jsonl`에서 `audience_event_fact`, `traffic`, aggregate 적재까지다.
 - [x] `presence_episode`, `global_unit`, `route_family`, spatial heatmap은 이 문서 범위가 아니다.
 - [x] trajectory 관련 계획과 적재 계약은 `PLAN_TRAJECTORY_FROM_06.md`에서 별도로 관리한다.
@@ -201,9 +219,11 @@ src/
 
 ```text
 src/
+├── common/
+│   ├── config.py
+│   └── logging_config.py
 ├── measurement/
 │   ├── main.py
-│   ├── config.py
 │   ├── collector.py
 │   ├── parser_demographic.py
 │   ├── parser_floating.py
@@ -214,6 +234,7 @@ src/
 │   ├── loader_traffic.py
 │   └── verify.py
 └── trajectory/
+    ├── main.py
     ├── preprocess.py
     ├── local_stage.py
     ├── global_stage.py
@@ -537,8 +558,8 @@ metric 규칙:
 
 ### 9.3 샘플 기반 golden 테스트
 
-- [x] `project-pooh-kt/docs/demographic.jsonl`
-- [x] `project-pooh-kt/docs/floating.jsonl`
+- [x] `samples/demographic.jsonl`
+- [x] `samples/floating.jsonl`
 - [x] accepted row 수
 - [x] rejected row 수
 - [x] generated fact 수
@@ -555,8 +576,8 @@ uv sync
 uv run pytest
 uv run ruff check
 uv run mypy
-uv run python -m src.main plan --target-date 2026-04-23 --media-id 101
-uv run python -m src.main run-batch --target-date 2026-04-23 --media-id 101 --dry-run
+uv run python -m src.measurement.main plan --target-date 2026-04-23 --media-id 101
+uv run python -m src.measurement.main run-batch --target-date 2026-04-23 --media-id 101 --dry-run
 ```
 
 운영 검증:

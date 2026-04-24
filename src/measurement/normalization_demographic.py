@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from src.models import AudienceFactDraft, DashboardBinding, DemographicRawRecord
+from src.measurement.models import AudienceFactDraft, DemographicRawRecord
 
 WATCH_THRESHOLDS = (1, 3, 7)
 

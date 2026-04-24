@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from src.dashboard_registry import AttributionContext, CampaignWindow, CreativeRef
-from src.models import AudienceFactDraft, RejectedRow
+from src.measurement.dashboard_registry import AttributionContext, CampaignWindow, CreativeRef
+from src.measurement.models import AudienceFactDraft, RejectedRow
 
 
 def resolve_attribution(

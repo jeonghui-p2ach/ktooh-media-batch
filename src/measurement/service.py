@@ -2,18 +2,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from src.attribution import resolve_attribution
-from src.collector import collect_objects
-from src.config import Settings
-from src.dashboard_registry import load_attribution_context, load_dashboard_bindings
-from src.loader_audience import load_audience_facts, trigger_aggregates
-from src.loader_traffic import load_traffic_rows
-from src.models import BatchRequest, DashboardBinding, LoadSummary
-from src.normalization_demographic import normalize_demographic_records
-from src.normalization_floating import normalize_floating_records
-from src.parser_demographic import parse_demographic_objects
-from src.parser_floating import parse_floating_objects
-from src.verify import verify_batch_load
+from src.common.config import Settings
+from src.measurement.attribution import resolve_attribution
+from src.measurement.collector import collect_objects
+from src.measurement.dashboard_registry import load_attribution_context, load_dashboard_bindings
+from src.measurement.loader_audience import load_audience_facts, trigger_aggregates
+from src.measurement.loader_traffic import load_traffic_rows
+from src.measurement.models import BatchRequest, DashboardBinding, LoadSummary
+from src.measurement.normalization_demographic import normalize_demographic_records
+from src.measurement.normalization_floating import normalize_floating_records
+from src.measurement.parser_demographic import parse_demographic_objects
+from src.measurement.parser_floating import parse_floating_objects
+from src.measurement.verify import verify_batch_load
 
 
 @dataclass(frozen=True, slots=True)
@@ -210,8 +210,18 @@ def _execute(
 
 def _fallback_bindings(request: BatchRequest) -> tuple[DashboardBinding, ...]:
     default_bindings = (
-        DashboardBinding(camera_code="CAM_5", source_type="demographic", media_id=request.media_id, camera_id=None),
-        DashboardBinding(camera_code="CAM_14", source_type="floating", media_id=request.media_id, camera_id=None),
+        DashboardBinding(
+            camera_code="CAM_5",
+            source_type="demographic",
+            media_id=request.media_id,
+            camera_id=None,
+        ),
+        DashboardBinding(
+            camera_code="CAM_14",
+            source_type="floating",
+            media_id=request.media_id,
+            camera_id=None,
+        ),
     )
     return tuple(
         binding

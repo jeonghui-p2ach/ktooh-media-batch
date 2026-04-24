@@ -4,8 +4,8 @@ from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
-from src.collector import iter_object_payload_lines
-from src.models import CollectedObject, DemographicRawRecord, RejectedRow
+from src.measurement.collector import iter_object_payload_lines
+from src.measurement.models import CollectedObject, DemographicRawRecord, RejectedRow
 
 
 def parse_demographic_objects(

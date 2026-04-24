@@ -96,7 +96,8 @@
 
 ### 3.1 프로젝트 경계
 
-- [ ] `ktooh-media-batch` 내부에 바로 넣지 않고 별도 하위 패키지 또는 별도 프로젝트로 분리하는 것이 기본이다.
+- [x] `ktooh-media-batch` 내부에서는 별도 하위 패키지로 분리한다.
+- [ ] 운영/배포 독립성이 필요해지면 별도 프로젝트로 승격한다.
 
 결론:
 
@@ -104,6 +105,7 @@
 - [x] 같은 저장소를 유지할 수는 있지만, 같은 `src` 루트 평면 구조에 섞는 방식은 피한다.
 - [x] 1차 권장안은 `ktooh-media-batch/src/measurement`와 `ktooh-media-batch/src/trajectory`의 하위 패키지 분리다.
 - [x] 2차 권장안은 운영/배포 독립성이 필요할 때 `ktooh-trajectory-batch/` 별도 프로젝트로 승격하는 것이다.
+- [x] 1차 권장안에 따라 `src/measurement`, `src/trajectory`, `src/common` 패키지 경계를 생성했다.
 
 권장:
 
@@ -132,9 +134,11 @@ ktooh-media-batch/src/trajectory/
 ```text
 ktooh-media-batch/
 ├── src/
+│   ├── common/
+│   │   ├── config.py
+│   │   └── logging_config.py
 │   ├── measurement/
 │   │   ├── main.py
-│   │   ├── config.py
 │   │   ├── collector.py
 │   │   ├── parser_demographic.py
 │   │   ├── parser_floating.py
@@ -145,6 +149,7 @@ ktooh-media-batch/
 │   │   ├── loader_traffic.py
 │   │   └── verify.py
 │   └── trajectory/
+│       ├── main.py
 │       ├── preprocess.py
 │       ├── local_stage.py
 │       ├── global_stage.py
@@ -155,6 +160,45 @@ ktooh-media-batch/
 ├── PLAN.md
 └── PLAN_TRAJECTORY_FROM_06.md
 ```
+
+현재 적용된 최소 구조:
+
+```text
+ktooh-media-batch/
+├── src/
+│   ├── common/
+│   │   ├── config.py
+│   │   └── logging_config.py
+│   ├── measurement/
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── pipeline.py
+│   │   ├── dashboard_registry.py
+│   │   ├── collector.py
+│   │   ├── parser_demographic.py
+│   │   ├── parser_floating.py
+│   │   ├── normalization_demographic.py
+│   │   ├── normalization_floating.py
+│   │   ├── attribution.py
+│   │   ├── loader_audience.py
+│   │   ├── loader_traffic.py
+│   │   ├── service.py
+│   │   └── verify.py
+│   └── trajectory/
+│       └── __init__.py
+├── samples/
+├── PLAN.md
+└── PLAN_TRAJECTORY_FROM_06.md
+```
+
+반영 완료:
+
+- [x] measurement batch 코드를 `src/measurement`로 이동
+- [x] `config.py`, `logging_config.py`는 `src/common`으로 이동
+- [x] trajectory는 아직 노트북 로직 없이 패키지 경계만 생성
+- [x] measurement CLI entrypoint는 `src.measurement.main:app`로 변경
+- [x] measurement 테스트는 `src.measurement.*` import를 사용
+- [x] 샘플 jsonl은 저장소 내부 `samples/`를 사용
 
 ### 3.2 상위 실행 흐름
 
@@ -189,6 +233,7 @@ run-trajectory-batch
 - [x] measurement batch 테스트와 trajectory batch 테스트는 분리한다.
 - [x] measurement batch release와 trajectory batch release는 독립 가능해야 한다.
 - [x] 공통 유틸이 필요하면 `src/common` 수준의 작은 공유 계층만 두고, 배치 로직은 공유하지 않는다.
+- [x] 현재 공통 계층은 `config`, `logging_config`만 포함한다.
 
 정리:
 

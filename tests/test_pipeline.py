@@ -1,6 +1,6 @@
 from datetime import date
 
-from src.pipeline import PipelineBuilder, validate_step_name, validate_workflow_status
+from src.measurement.pipeline import PipelineBuilder, validate_step_name, validate_workflow_status
 
 
 def test_build_plan_uses_media_id() -> None:

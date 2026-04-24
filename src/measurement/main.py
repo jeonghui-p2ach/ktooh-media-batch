@@ -3,11 +3,11 @@ from typing import Annotated
 
 import typer
 
-from src.config import Settings
-from src.logging_config import get_logger
-from src.models import BatchRequest
-from src.pipeline import PipelineBuilder, validate_step_name
-from src.service import execute_batch, execute_step
+from src.common.config import Settings
+from src.common.logging_config import get_logger
+from src.measurement.models import BatchRequest
+from src.measurement.pipeline import PipelineBuilder, validate_step_name
+from src.measurement.service import execute_batch, execute_step
 
 app = typer.Typer(no_args_is_help=True)
 logger = get_logger(__name__)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from src.models import AudienceFactDraft, FloatingRawRecord, TrafficDraft
+from src.measurement.models import AudienceFactDraft, FloatingRawRecord, TrafficDraft
 
 VEHICLE_TYPE_MAP = {
     "car": "CAR",

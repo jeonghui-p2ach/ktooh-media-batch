@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
-from src.models import BatchWindow, PipelinePlan
+from src.measurement.models import BatchWindow, PipelinePlan
 
 DEFAULT_STEPS = (
     "load-media-cameras",

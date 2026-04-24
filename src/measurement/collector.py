@@ -3,14 +3,14 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+from collections.abc import Iterator
 from datetime import date
 from pathlib import Path
-from typing import Iterator
 
 import boto3
 
-from src.config import Settings
-from src.models import CollectedObject, DashboardBinding
+from src.common.config import Settings
+from src.measurement.models import CollectedObject, DashboardBinding
 
 
 def collect_objects(

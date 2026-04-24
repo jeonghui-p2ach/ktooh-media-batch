@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import asdict
 from datetime import date
 
 from sqlalchemy import create_engine, text
 
-from src.models import LoadSummary
+from src.measurement.models import LoadSummary
 
 
 def verify_batch_load(
@@ -33,7 +32,10 @@ def verify_batch_load(
                         FROM audience_event_fact
                         WHERE media_id = :media_id
                           AND occurred_date = :target_date
-                          AND source_type IN ('demographic_measurement_v1', 'floating_pedestrian_pattern_v1')
+                          AND source_type IN (
+                              'demographic_measurement_v1',
+                              'floating_pedestrian_pattern_v1'
+                          )
                         """
                     ),
                     {"media_id": media_id, "target_date": target_date},
