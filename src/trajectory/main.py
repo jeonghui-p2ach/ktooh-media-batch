@@ -7,6 +7,7 @@ import typer
 from src.common.logging_config import get_logger
 from src.trajectory.contracts import build_trajectory_request
 from src.trajectory.pipeline import TrajectoryPipelineBuilder
+from src.trajectory.verify import verify_artifact_files
 
 app = typer.Typer(no_args_is_help=True)
 logger = get_logger(__name__)
@@ -67,6 +68,36 @@ def plan(
         "artifacts="
         + ",".join(str(artifact.path) for artifact in pipeline_plan.artifacts)
     )
+
+
+@app.command("verify-artifacts")
+def verify_artifacts(
+    target_date: Annotated[str, typer.Option("--target-date")],
+    run_root: Annotated[Path, typer.Option("--run-root")],
+    media_id: Annotated[int, typer.Option("--media-id")],
+    camera_codes: Annotated[str | None, typer.Option("--camera-codes")] = None,
+) -> None:
+    request = build_trajectory_request(
+        target_date=parse_target_date(target_date),
+        run_root=run_root,
+        media_id=media_id,
+        camera_codes=parse_camera_codes(camera_codes),
+        force=False,
+    )
+    pipeline_plan = TrajectoryPipelineBuilder().build_plan(request)
+    summary = verify_artifact_files(pipeline_plan.artifacts)
+    logger.info(
+        "trajectory_artifacts_verified",
+        target_date=request.target_date.isoformat(),
+        media_id=request.media_id,
+        artifact_count=len(summary.checks),
+        missing_count=summary.missing_count,
+    )
+    for check in summary.checks:
+        typer.echo(f"{check.artifact_name}\texists={check.exists}\tpath={check.path}")
+    typer.echo(f"missing_count={summary.missing_count}")
+    if not summary.ok:
+        raise typer.Exit(code=1)
 
 
 def main() -> None:

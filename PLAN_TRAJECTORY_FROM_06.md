@@ -676,7 +676,7 @@ run-trajectory-batch
 
 ### 7.5 Phase E. Verification (`Feature`)
 
-- [ ] 파일 산출물 존재 검증
+- [x] 파일 산출물 존재 검증
 - [ ] 주요 row count 비교
 - [ ] notebook 결과와 golden 비교
 - [ ] attribution null/중복/충돌 검증
@@ -694,6 +694,7 @@ run-trajectory-batch
 - [ ] 06 노트북 산출 pickle과 row count 비교
 - [ ] 컬럼셋 비교
 - [ ] null/중복/시간 역전 검증
+- [x] artifact 존재 검증
 - [ ] spatial heatmap intermediate artifact 존재 검증
 
 ### 8.2 로직 검증

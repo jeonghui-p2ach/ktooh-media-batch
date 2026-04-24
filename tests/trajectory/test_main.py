@@ -35,3 +35,22 @@ def test_plan_command_prints_steps_and_artifacts() -> None:
     assert "camera_codes=CAM_14,CAM_5" in result.stdout
     assert "steps=preprocess-groundplane,local-stitch" in result.stdout
     assert "/tmp/ktooh-run/local_stitch_v2/prepared_all.pkl" in result.stdout
+
+
+def test_verify_artifacts_command_returns_nonzero_when_files_are_missing() -> None:
+    result = CliRunner().invoke(
+        app,
+        [
+            "verify-artifacts",
+            "--target-date",
+            "2026-04-23",
+            "--run-root",
+            "/tmp/ktooh-missing-run",
+            "--media-id",
+            "101",
+        ],
+    )
+
+    assert result.exit_code == 1
+    assert "prepared_all" in result.stdout
+    assert "missing_count=15" in result.stdout
