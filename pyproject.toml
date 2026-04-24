@@ -24,6 +24,7 @@ dev = [
 
 [project.scripts]
 media-batch = "src.measurement.main:app"
+trajectory-batch = "src.trajectory.main:app"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
