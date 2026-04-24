@@ -189,7 +189,12 @@ src/
 │   ├── service.py
 │   └── verify.py
 └── trajectory/
-    └── __init__.py
+    ├── __init__.py
+    ├── contracts.py
+    ├── main.py
+    ├── pipeline.py
+    ├── stages.py
+    └── verify.py
 ```
 
 완료 결과:
@@ -197,6 +202,7 @@ src/
 - [x] 기존 measurement batch 평면 구조를 `src/measurement`로 이동
 - [x] 설정과 로깅 경계는 `src/common`으로 분리
 - [x] trajectory 구현 전용 경계로 `src/trajectory` 패키지 생성
+- [x] trajectory stage/artifact 계약, plan CLI, stage wrapper, artifact 검증 경계 구현
 - [x] CLI entrypoint를 `src.measurement.main:app`로 변경
 - [x] 테스트 import를 `src.measurement.*` 기준으로 변경
 - [x] 샘플 테스트 입력은 저장소 내부 `samples/` 경로를 사용
@@ -235,12 +241,9 @@ src/
 │   └── verify.py
 └── trajectory/
     ├── main.py
-    ├── preprocess.py
-    ├── local_stage.py
-    ├── global_stage.py
-    ├── metrics_stage.py
-    ├── routes_stage.py
-    ├── storage.py
+    ├── contracts.py
+    ├── pipeline.py
+    ├── stages.py
     └── verify.py
 ```
 

@@ -185,7 +185,12 @@ ktooh-media-batch/
 │   │   ├── service.py
 │   │   └── verify.py
 │   └── trajectory/
-│       └── __init__.py
+│       ├── __init__.py
+│       ├── contracts.py
+│       ├── main.py
+│       ├── pipeline.py
+│       ├── stages.py
+│       └── verify.py
 ├── samples/
 ├── PLAN.md
 └── PLAN_TRAJECTORY_FROM_06.md
@@ -195,10 +200,12 @@ ktooh-media-batch/
 
 - [x] measurement batch 코드를 `src/measurement`로 이동
 - [x] `config.py`, `logging_config.py`는 `src/common`으로 이동
-- [x] trajectory는 아직 노트북 로직 없이 패키지 경계만 생성
+- [x] trajectory는 아직 노트북 알고리즘 복사 없이 계약/CLI/wrapper/검증 경계까지 생성
 - [x] measurement CLI entrypoint는 `src.measurement.main:app`로 변경
 - [x] measurement 테스트는 `src.measurement.*` import를 사용
 - [x] 샘플 jsonl은 저장소 내부 `samples/`를 사용
+- [x] trajectory CLI entrypoint는 `src.trajectory.main:app`로 추가
+- [x] trajectory `plan`, `verify-artifacts` 명령을 추가
 
 ### 3.2 상위 실행 흐름
 
@@ -967,12 +974,15 @@ view 또는 읽기 전용 모델:
 
 1. [x] 이 문서 기준으로 trajectory 적재 대상 테이블 컬럼을 더 구체화한다.
 2. [x] 06 노트북 산출물 컬럼 스냅샷을 추출해 부록 문서를 만든다.
-3. [~] measurement batch와 trajectory batch의 경계를 문서로 명확히 정리한다.
+3. [x] measurement batch와 trajectory batch의 경계를 문서로 명확히 정리한다.
 4. [x] trajectory 필터 기준을 `media_id + camera`로 확정한다.
 5. [x] trajectory에 `campaign_id`, `creative_id` 귀속 포함 정책을 반영한다.
 6. [x] `hourly_metric_summary` 원본 + dashboard용 집계 view + heatmap 계획을 반영한다.
 7. [x] GPS/지도 heatmap을 위한 공간 좌표 변환과 spatial heatmap 계획을 추가한다.
 8. [x] `ktooh-dashboard-poc` 최소 API/모델/Repository 변경 목록을 추가한다.
+9. [x] trajectory stage/artifact 계약을 `src/trajectory/contracts.py`로 고정한다.
+10. [x] trajectory stage wrapper를 `src/trajectory/stages.py`로 고정한다.
+11. [x] 다음 dashboard 연동 작업은 `PLAN_DASHBOARD_TRAJECTORY_INTEGRATION.md`에서 작은 작업 단위로 관리한다.
 
 ---
 **References:**
