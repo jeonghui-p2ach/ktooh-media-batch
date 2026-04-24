@@ -72,7 +72,7 @@
 
 - [x] camera source type의 `floating`은 raw movement source를 뜻한다.
 - [x] dashboard metric `floating_population`은 외부 유동인구 지표를 뜻한다.
-- [ ] `노출`을 `attentive_population`으로 볼지 최종 확정이 필요하다.
+- [x] `노출`은 `attentive_population`으로 본다.
 
 ### 2.5 시간 (UTC) 고정
 
@@ -97,12 +97,12 @@
 
 ### 3.1 `노출` 매핑
 
-- [ ] `노출 = attentive_population`
+- [x] `노출 = attentive_population`
 - [ ] 또는 `노출 = visible_population` + `가시권` 별도 재정의
 
 권장:
 
-- [ ] 1차는 `가시권 = visible_population`, `노출 = attentive_population`, `시청 = watched_population`
+- [x] 1차는 `가시권 = visible_population`, `노출 = attentive_population`, `시청 = watched_population`
 
 ### 3.2 creative 미확정 정책
 
@@ -111,7 +111,7 @@
 
 권장:
 
-- [ ] campaign 단일이면 적재, creative는 단일 해소일 때만 채움
+- [x] campaign 단일이면 적재, creative는 단일 해소일 때만 채움
 
 ### 3.3 floating pedestrian pattern 범위
 
@@ -120,7 +120,7 @@
 
 권장:
 
-- [ ] 1차는 traffic 적재를 먼저 끝내고, pedestrian pattern은 `dwell_time_seconds`만 보수적으로 포함
+- [x] 1차는 traffic 적재를 먼저 끝내고, pedestrian pattern은 `dwell_time_seconds`만 보수적으로 포함
 
 ### 3.4 fact 추적 컬럼 추가
 
@@ -389,7 +389,7 @@ metric 규칙:
 - [x] `ts = start_time` (UTC)
 - [x] `count = 1`
 - [x] `campaign_id = NULL`
-- [ ] `direction`은 canonical 값 집합으로 고정한다.
+- [x] `direction`은 `enter`, `exit`, `unknown`으로 고정한다.
 
 ### 6.3 floating -> audience pattern
 
@@ -545,7 +545,7 @@ metric 규칙:
 - [x] parser floating
 - [x] demographic normalization
 - [x] floating normalization
-- [ ] attribution
+- [x] attribution
 - [x] step/status validation
 
 ### 9.2 통합 테스트
@@ -602,11 +602,11 @@ uv run python -m src.measurement.main run-batch --target-date 2026-04-23 --media
 
 ### 11.2 대응
 
-- [ ] creative는 단일 해소일 때만 채운다.
-- [ ] pedestrian pattern은 1차에서 dwell 중심으로 제한한다.
-- [ ] UTC 계약을 parser·loader·fixture·검증 기대값에 그대로 반영한다.
-- [ ] S3·파일 읽기는 스트리밍/iterator와 완전 listing으로 설계한다.
-- [ ] 멱등 키는 `source_batch_id` 중심으로 고정한다.
+- [x] creative는 단일 해소일 때만 채운다.
+- [x] pedestrian pattern은 1차에서 dwell 중심으로 제한한다.
+- [x] UTC 계약을 parser·loader·fixture·검증 기대값에 그대로 반영한다.
+- [x] S3·파일 읽기는 스트리밍/iterator와 완전 listing으로 설계한다.
+- [x] 멱등 키는 `source_batch_id` 중심으로 고정한다.
 
 ---
 
