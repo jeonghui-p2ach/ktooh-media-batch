@@ -336,11 +336,7 @@ def _global_presence_episode_row(
 def _hourly_metric_row(row: Mapping[str, Any], context: TrajectoryLoadContext) -> dict[str, Any]:
     hour_start = _datetime(row.get("hour_start"), _midnight(context.target_date))
     # camera_name should be provided by metrics logic. 
-    # Fallback only to the first camera if it's explicitly intended for media-wide rows (not recommended).
     camera_name = _string(row.get("camera_name"), "")
-    if not camera_name and context.camera_codes:
-        # Warning: ambiguous attribution
-        camera_name = context.camera_codes[0].camera_name
     return {
         "target_date": context.target_date,
         "media_id": context.media_id,

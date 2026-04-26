@@ -22,17 +22,8 @@ def build_corrected_hourly_metrics(
     
     all_rows = []
     
-    # 1. Media-wide metrics (ALL cameras)
-    media_hours = _collect_hour_starts(global_units, global_presence)
-    for hour_start in media_hours:
-        row = _hourly_row(
-            hour_start=hour_start,
-            global_units=global_units,
-            global_presence=global_presence,
-            metrics_version=metrics_version,
-        )
-        row["camera_name"] = "" # Empty means media-wide
-        all_rows.append(row)
+    # 1. Media-wide metrics (ALL cameras) 
+    # - Removed per Unit 2-B decision. Media-wide aggregation is done dynamically via DB GROUP BY.
 
     # 2. Camera-level metrics
     for camera_name, camera_presence in presence_by_camera.items():
