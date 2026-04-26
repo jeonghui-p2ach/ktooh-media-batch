@@ -103,3 +103,49 @@ def test_spatial_heatmap_cells_aggregate_route_points() -> None:
     assert rows.spatial_heatmap_cells[0]["point_count"] == 2
     assert rows.spatial_heatmap_cells[0]["visible_unique_units"] == 1
     assert rows.spatial_heatmap_cells[0]["spatial_ref"] == "EPSG:4326"
+
+
+def test_spatial_heatmap_cells_aggregate_multiple_transitions_in_same_cell() -> None:
+    context = TrajectoryLoadContext(
+        target_date=date(2026, 4, 23),
+        media_id=101,
+        camera_codes=(CameraCodeMapping(camera_name="Camera A", camera_code="CAM_A"),),
+        spatial_cell=SpatialCellConfig(zoom=18, cell_size_degrees=0.001),
+        geo_transforms=(
+            CameraGeoTransform(
+                camera_code="CAM_A",
+                origin_lat=37.0,
+                origin_lng=127.0,
+                lat_per_world_y=0.001,
+                lng_per_world_x=0.001,
+            ),
+        ),
+    )
+    # 2 transitions in the same hour, both route_points fall into the same cell (0, 0) -> cell (127.0, 37.0)
+    rows = build_dashboard_rows(
+        {
+            "transition_units_df": (
+                {
+                    "local_unit_id": "LU-1",
+                    "camera_name": "Camera A",
+                    "start_time": datetime(2026, 4, 23, 9, 0),
+                    "route_points": [(0, 0)],
+                    "dwell_s": 10,
+                },
+                {
+                    "local_unit_id": "LU-2",
+                    "camera_name": "Camera A",
+                    "start_time": datetime(2026, 4, 23, 9, 30),
+                    "route_points": [(0, 0)],
+                    "dwell_s": 15,
+                },
+            )
+        },
+        context,
+    )
+
+    assert len(rows.spatial_heatmap_cells) == 1
+    assert rows.spatial_heatmap_cells[0]["point_count"] == 2
+    assert rows.spatial_heatmap_cells[0]["visible_unique_units"] == 2
+    # The current expected behavior is that total_visible_dwell_s accumulates
+    assert rows.spatial_heatmap_cells[0]["total_visible_dwell_s"] == 25
