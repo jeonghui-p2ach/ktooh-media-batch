@@ -11,6 +11,7 @@ from sqlalchemy import create_engine, text
 
 from src.trajectory.artifacts import object_to_rows
 from src.trajectory.contracts import ArtifactRef
+from src.trajectory.datetime_utils import to_utc_naive
 from src.trajectory.spatial import (
     CameraGeoTransform,
     SpatialCellConfig,
@@ -174,16 +175,24 @@ def build_spatial_heatmap_cells(
 ) -> tuple[dict[str, Any], ...]:
     transform_by_camera = {item.camera_code: item for item in context.geo_transforms}
     grouped: dict[tuple[Any, ...], dict[str, Any]] = {}
+    # Track units per cell+hour to avoid double counting dwell
+    unit_cell_hour_dwell: set[tuple[str, str, int]] = set()
+
     for row in transition_rows:
         camera_name = _string(row.get("camera_name"), "unknown")
         camera_code = _camera_code(camera_name, context)
         transform = transform_by_camera.get(camera_code)
         if transform is None:
             continue
+        
+        unit_id = _string(row.get("local_unit_id"), "")
+        dwell_s = _float(row.get("dwell_s"))
+        start_time = _datetime(row.get("start_time"), _midnight(context.target_date))
+        hour = start_time.hour
+
         for point in extract_xy_points(row.get("route_points")):
             geo_point = world_xy_to_geo(point, transform)
             cell_id = cell_id_for_geo(camera_code, geo_point, context.spatial_cell)
-            hour = _datetime(row.get("start_time"), _midnight(context.target_date)).hour
             key = (
                 context.target_date,
                 context.media_id,
@@ -193,35 +202,47 @@ def build_spatial_heatmap_cells(
                 hour,
                 cell_id,
             )
+            
             centroid = cell_centroid_from_id(cell_id, context.spatial_cell)
             current = grouped.get(key)
-            next_point_count = 1 if current is None else int(current["point_count"]) + 1
-            next_units = (
-                {_string(row.get("local_unit_id"), "")}
-                if current is None
-                else set(current["_unit_ids"]) | {_string(row.get("local_unit_id"), "")}
-            )
-            grouped[key] = {
-                "target_date": context.target_date,
-                "media_id": context.media_id,
-                "camera_code": camera_code,
-                "camera_name": camera_name,
-                "campaign_id": context.campaign_id,
-                "creative_id": context.creative_id,
-                "hour": hour,
-                "cell_id": cell_id,
-                "cell_centroid_lat": centroid.lat,
-                "cell_centroid_lng": centroid.lng,
-                "cell_geojson": None,
-                "cell_polygon_wkt": None,
-                "point_count": next_point_count,
-                "visible_unique_units": len(next_units),
-                "total_visible_dwell_s": _float(row.get("dwell_s")),
-                "heatmap_value": next_point_count,
-                "spatial_ref": context.spatial_cell.spatial_ref,
-                "source_batch_id": context.source_batch_id,
-                "_unit_ids": next_units,
-            }
+            
+            # Unit+Cell+Hour dwell tracking
+            uch_key = (unit_id, cell_id, hour)
+            add_dwell = 0.0
+            if uch_key not in unit_cell_hour_dwell:
+                add_dwell = dwell_s
+                unit_cell_hour_dwell.add(uch_key)
+
+            if current is None:
+                grouped[key] = {
+                    "target_date": context.target_date,
+                    "media_id": context.media_id,
+                    "camera_code": camera_code,
+                    "camera_name": camera_name,
+                    "campaign_id": context.campaign_id,
+                    "creative_id": context.creative_id,
+                    "hour": hour,
+                    "cell_id": cell_id,
+                    "cell_centroid_lat": centroid.lat,
+                    "cell_centroid_lng": centroid.lng,
+                    "cell_geojson": None,
+                    "cell_polygon_wkt": None,
+                    "point_count": 1,
+                    "visible_unique_units": 1,
+                    "total_visible_dwell_s": add_dwell,
+                    "heatmap_value": 1,
+                    "spatial_ref": context.spatial_ref if hasattr(context, 'spatial_ref') else context.spatial_cell.spatial_ref,
+                    "source_batch_id": context.source_batch_id,
+                    "_unit_ids": {unit_id},
+                }
+            else:
+                current["point_count"] += 1
+                current["heatmap_value"] = current["point_count"]
+                current["total_visible_dwell_s"] += add_dwell
+                if unit_id not in current["_unit_ids"]:
+                    current["visible_unique_units"] += 1
+                    current["_unit_ids"].add(unit_id)
+
     return tuple(_without_internal_keys(row) for row in grouped.values())
 
 
@@ -314,10 +335,12 @@ def _global_presence_episode_row(
 
 def _hourly_metric_row(row: Mapping[str, Any], context: TrajectoryLoadContext) -> dict[str, Any]:
     hour_start = _datetime(row.get("hour_start"), _midnight(context.target_date))
-    camera_name = _string(
-        row.get("camera_name"),
-        context.camera_codes[0].camera_name if context.camera_codes else "",
-    )
+    # camera_name should be provided by metrics logic. 
+    # Fallback only to the first camera if it's explicitly intended for media-wide rows (not recommended).
+    camera_name = _string(row.get("camera_name"), "")
+    if not camera_name and context.camera_codes:
+        # Warning: ambiguous attribution
+        camera_name = context.camera_codes[0].camera_name
     return {
         "target_date": context.target_date,
         "media_id": context.media_id,
@@ -414,11 +437,7 @@ def _date(value: Any, default: date) -> date:
 
 
 def _datetime(value: Any, default: datetime) -> datetime:
-    if isinstance(value, datetime):
-        return value.replace(tzinfo=None)
-    if isinstance(value, str) and value:
-        return datetime.fromisoformat(value).replace(tzinfo=None)
-    return default
+    return to_utc_naive(value, default=default)
 
 
 def _optional_datetime(value: Any) -> datetime | None:

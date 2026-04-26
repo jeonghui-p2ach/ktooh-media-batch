@@ -4,6 +4,8 @@ from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Any
 
+from src.trajectory.datetime_utils import to_utc_naive
+
 
 def materialize_revised_global_units(
     transition_units: Sequence[Mapping[str, Any]],
@@ -149,11 +151,7 @@ def _mean(values: Sequence[float]) -> float | None:
 
 
 def _datetime(value: Any) -> datetime | None:
-    if isinstance(value, datetime):
-        return value.replace(tzinfo=None)
-    if isinstance(value, str) and value:
-        return datetime.fromisoformat(value).replace(tzinfo=None)
-    return None
+    return to_utc_naive(value)
 
 
 def _optional_float(value: Any) -> float | None:

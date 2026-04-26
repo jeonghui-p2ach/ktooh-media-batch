@@ -5,6 +5,7 @@ from collections.abc import Mapping, Sequence
 from datetime import date, datetime, timedelta
 from typing import Any
 
+from src.trajectory.datetime_utils import to_utc_naive
 from src.trajectory.intervals import union_interval_seconds
 
 
@@ -14,19 +15,41 @@ def build_corrected_hourly_metrics(
     *,
     metrics_version: str = "metrics-v1",
 ) -> tuple[dict[str, Any], ...]:
-    hours = _collect_hour_starts(global_units, global_presence)
-    if not hours:
-        return ()
-
-    return tuple(
-        _hourly_row(
+    # Group presence by camera
+    presence_by_camera = defaultdict(list)
+    for row in global_presence:
+        presence_by_camera[_string(row.get("camera_name"))].append(row)
+    
+    all_rows = []
+    
+    # 1. Media-wide metrics (ALL cameras)
+    media_hours = _collect_hour_starts(global_units, global_presence)
+    for hour_start in media_hours:
+        row = _hourly_row(
             hour_start=hour_start,
             global_units=global_units,
             global_presence=global_presence,
             metrics_version=metrics_version,
         )
-        for hour_start in hours
-    )
+        row["camera_name"] = "" # Empty means media-wide
+        all_rows.append(row)
+
+    # 2. Camera-level metrics
+    for camera_name, camera_presence in presence_by_camera.items():
+        if not camera_name:
+            continue
+        hours = _collect_hour_starts(global_units, camera_presence)
+        for hour_start in hours:
+            row = _hourly_row(
+                hour_start=hour_start,
+                global_units=global_units,
+                global_presence=camera_presence,
+                metrics_version=metrics_version,
+            )
+            row["camera_name"] = camera_name
+            all_rows.append(row)
+            
+    return tuple(all_rows)
 
 
 def _hourly_row(
@@ -219,13 +242,7 @@ def _safe_divide(numerator: float, denominator: int) -> float:
 
 
 def _datetime(value: Any) -> datetime | None:
-    if isinstance(value, datetime):
-        return value.replace(tzinfo=None)
-    if isinstance(value, date):
-        return datetime.combine(value, datetime.min.time())
-    if isinstance(value, str) and value:
-        return datetime.fromisoformat(value).replace(tzinfo=None)
-    return None
+    return to_utc_naive(value)
 
 
 def _string(value: Any) -> str:

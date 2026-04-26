@@ -143,10 +143,10 @@ def verify_artifacts(
 
 @app.command("load-dashboard")
 def load_dashboard(
-    target_date: Annotated[str, typer.Option("--target-date")],
-    run_root: Annotated[Path, typer.Option("--run-root")],
-    media_id: Annotated[int, typer.Option("--media-id")],
-    database_url: Annotated[str | None, typer.Option("--database-url")] = None,
+    target_date: Annotated[str, typer.Option("--target-date", help="Target date in YYYY-MM-DD")],
+    run_root: Annotated[Path, typer.Option("--run-root", help="Root directory of pipeline artifacts")],
+    media_id: Annotated[int, typer.Option("--media-id", help="Media ID to associate")],
+    database_url: Annotated[str | None, typer.Option("--database-url", help="Database URL")] = None,
     camera_map: Annotated[str | None, typer.Option("--camera-map")] = None,
     campaign_id: Annotated[int | None, typer.Option("--campaign-id")] = None,
     creative_id: Annotated[int | None, typer.Option("--creative-id")] = None,
@@ -160,6 +160,11 @@ def load_dashboard(
     ] = 0.0001,
     dry_run: Annotated[bool, typer.Option("--dry-run")] = False,
 ) -> None:
+    """
+    Load trajectory artifacts to the dashboard database.
+    WARNING: This command will DELETE all existing trajectory data for the 
+    specified --media-id and --target-date before performing insertion.
+    """
     request = build_trajectory_request(
         target_date=parse_target_date(target_date),
         run_root=run_root,
